@@ -1,3 +1,0 @@
-export enum MessageType {
-    Initialize
-}

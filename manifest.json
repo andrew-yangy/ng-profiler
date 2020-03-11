@@ -13,6 +13,9 @@
   "background": {
     "scripts": ["background.bundle.js"]
   },
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
   "web_accessible_resources": [
     "*"
   ]
