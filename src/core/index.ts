@@ -1,4 +1,11 @@
 import { Message, MESSAGE_SOURCE, MessageMethod, MessageType } from "../communication/message.type";
+import { findLView } from "./render3/context_discovery";
+import { findAngularVersion } from "./util/view_utils";
+
+export interface AngularInfo {
+  isIvy: boolean,
+  version: string
+}
 
 function handleMessage(e: MessageEvent) {
   if (!e.data) {
@@ -11,9 +18,13 @@ function handleMessage(e: MessageEvent) {
     return;
   }
 
-  let content;
+  let content: AngularInfo;
   if (data.type === MessageType.IS_IVY) {
-    content = true;
+    const view = findLView();
+    content = {
+      isIvy: !!view,
+      version: findAngularVersion(view)
+    }
   }
 
   const messageToSend: Message = {

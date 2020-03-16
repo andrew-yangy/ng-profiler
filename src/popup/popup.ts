@@ -1,7 +1,9 @@
 import { Message, MessageMethod, MessageType } from "../communication/message.type";
+import { AngularInfo } from "../core";
 
 function onDOMContentLoaded() {
   const traceSwitcherCbx = document.getElementById('traceSwitcherCbx');
+  const descrElem = document.getElementById('description');
   const errorElem = document.getElementById('error');
   const switcherElem = document.getElementById('switcher');
 
@@ -33,11 +35,13 @@ function onDOMContentLoaded() {
   });
 
   chrome.runtime.onMessage.addListener(
-    function (request) {
+    function (request: Message<AngularInfo>) {
       if (request.type === MessageType.IS_IVY) {
-        if (!request.payload) {
+        if (!request.content.isIvy) {
           switcherElem.style.display = 'none';
-          errorElem.innerHTML = `This page doesn't appear to be using IVY.`;
+          errorElem.innerText = `This page doesn't appear to be using IVY.`;
+        } else {
+          descrElem.innerText = `Found Angular on version ${request.content.version}`;
         }
       }
     }

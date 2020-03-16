@@ -1,5 +1,7 @@
-import {Message, MESSAGE_SOURCE, MessageType} from "./communication/message.type";
-import { createMessage, observeMessage } from "./communication/messager";
+import { Message, MessageType } from "./communication/message.type";
+import { createRequestMessage, createResponseMessage, observeMessage } from "./communication/messager";
+import { pluck } from "rxjs/operators";
+import { AngularInfo } from "./core";
 
 const scriptInjection = new Set<string>();
 
@@ -36,10 +38,10 @@ injectScript('core.bundle.js', onInjectedScriptLoaded);
 
 chrome.runtime.onMessage.addListener( (request: Message) => {
   if (request.type === MessageType.IS_IVY) {
-    isAngularApp();
+    observeMessage<AngularInfo>(createRequestMessage(MessageType.IS_IVY))
+      .pipe(pluck('content'))
+      .subscribe(info => {
+        chrome.runtime.sendMessage(createResponseMessage<AngularInfo>(MessageType.IS_IVY, info))
+      });
   }
 });
-
-function isAngularApp() {
-  observeMessage(createMessage(MessageType.IS_IVY)).subscribe(res => console.log(res));
-}
