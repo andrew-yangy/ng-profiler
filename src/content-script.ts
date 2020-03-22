@@ -27,10 +27,11 @@ const injectScript = (path: string, onLoadHandler?: () => void) => {
 };
 
 const onInjectedScriptLoaded = () => {
-  console.log('loaded');
-  // chrome.storage.local.get('ngTraceEnabled', ({ngTraceEnabled}) => {
-  //     promisedPostMessage.postMessage(ContentScriptEvents.TOGGLE_TRACING, {enabled: ngTraceEnabled});
-  // });
+  chrome.storage.local.get('ngProfilerEnabled', ({ngProfilerEnabled}) => {
+    observeMessage<boolean>(
+      createMessage(MessageType.TOGGLE_PROFILING, MessageMethod.Request, ngProfilerEnabled)
+    )
+  });
 };
 
 injectScript('core.bundle.js', onInjectedScriptLoaded);
