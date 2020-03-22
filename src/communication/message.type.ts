@@ -14,6 +14,6 @@ export enum MessageMethod {
 }
 
 export enum MessageType {
-  TOGGLE_TRACING,
+  TOGGLE_PROFILING,
   IS_IVY
 }

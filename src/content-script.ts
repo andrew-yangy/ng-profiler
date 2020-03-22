@@ -1,6 +1,5 @@
-import { Message, MessageType } from "./communication/message.type";
-import { createRequestMessage, createResponseMessage, observeMessage } from "./communication/messager";
-import { pluck } from "rxjs/operators";
+import { Message, MessageMethod, MessageType } from "./communication/message.type";
+import { createMessage, observeMessage } from "./communication/messager";
 import { AngularInfo } from "./core";
 
 const scriptInjection = new Set<string>();
@@ -37,11 +36,16 @@ const onInjectedScriptLoaded = () => {
 injectScript('core.bundle.js', onInjectedScriptLoaded);
 
 chrome.runtime.onMessage.addListener( (request: Message) => {
+  if (request.method !== MessageMethod.Request) return;
   if (request.type === MessageType.IS_IVY) {
-    observeMessage<AngularInfo>(createRequestMessage(MessageType.IS_IVY))
-      .pipe(pluck('content'))
-      .subscribe(info => {
-        chrome.runtime.sendMessage(createResponseMessage<AngularInfo>(MessageType.IS_IVY, info))
-      });
+    observeMessage<AngularInfo>(
+      createMessage(MessageType.IS_IVY, MessageMethod.Request)
+    ).subscribe(info => {
+      chrome.runtime.sendMessage(createMessage<AngularInfo>(MessageType.IS_IVY, MessageMethod.Response, info))
+    });
+  } else if (request.type === MessageType.TOGGLE_PROFILING) {
+    observeMessage<boolean>(
+      createMessage(MessageType.TOGGLE_PROFILING, MessageMethod.Request, request.content)
+    )
   }
 });

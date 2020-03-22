@@ -1,6 +1,8 @@
 import { Message, MESSAGE_SOURCE, MessageMethod, MessageType } from "../communication/message.type";
-import { findLView } from "./render3/context_discovery";
-import { findAngularVersion } from "./util/view_utils";
+import { findLView } from "./angular/render3/context_discovery";
+import { findAngularVersion } from "./angular/util/view_utils";
+import { createMessage } from "../communication/messager";
+import { startProfiling, stopProfiling } from "./util/profiling";
 
 export interface AngularInfo {
   isIvy: boolean,
@@ -18,21 +20,18 @@ function handleMessage(e: MessageEvent) {
     return;
   }
 
-  let content: AngularInfo;
+  let content: AngularInfo | string;
   if (data.type === MessageType.IS_IVY) {
     const view = findLView();
     content = {
       isIvy: !!view,
       version: findAngularVersion(view)
     }
+  } else if (data.type === MessageType.TOGGLE_PROFILING) {
+    data.content ? startProfiling() : stopProfiling();
   }
 
-  const messageToSend: Message = {
-    type: data.type,
-    method: MessageMethod.Response,
-    content
-  };
-  postMessage(messageToSend, '*');
+  postMessage(createMessage(data.type, MessageMethod.Response, content), '*');
 }
 
 window.addEventListener('message', handleMessage);

@@ -9,21 +9,22 @@ function onDOMContentLoaded() {
 
   traceSwitcherCbx.addEventListener('change', e => {
     const enabled = (e.target as HTMLInputElement).checked;
+    chrome.storage.local.set({ngTraceEnabled: enabled});
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
       const message: Message<boolean> = {
-        type: MessageType.TOGGLE_TRACING,
-        method: MessageMethod.Response,
+        type: MessageType.TOGGLE_PROFILING,
+        method: MessageMethod.Request,
         content: enabled
       };
       chrome.tabs.sendMessage(tabs[0].id, message);
     });
   });
 
-  const message: Message = {
-    type: MessageType.IS_IVY
-  };
-
   chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    const message: Message = {
+      type: MessageType.IS_IVY,
+      method: MessageMethod.Request,
+    };
     try {
       chrome.tabs.sendMessage(
         tabs[0].id,
