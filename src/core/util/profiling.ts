@@ -1,8 +1,9 @@
 import { findLView } from "../angular/render3/context_discovery";
 import { getRootView } from "../angular/util/view_traversal_utils";
-import { CONTEXT, LView, RootContext, TView, TVIEW } from "../angular/interfaces/view";
+import { CONTEXT, HOST, LView, RootContext, TView, TVIEW } from "../angular/interfaces/view";
 import { getComponentLViewByIndex, readPatchedLView } from "../angular/util/view_utils";
 import { RenderFlags } from "../angular/interfaces/definition";
+import { CanvasFactory } from "./canvas";
 
 export const startProfiling = () => {
   const view = findLView();
@@ -10,6 +11,7 @@ export const startProfiling = () => {
   const rootComponent = (root[CONTEXT] as RootContext).components[0];
   const rootComponentLView = readPatchedLView(rootComponent);
 
+  CanvasFactory.create();
   const childComponents = rootComponentLView[TVIEW].components;
   if (childComponents !== null) {
     attachChildComponents(rootComponentLView, childComponents);
@@ -29,20 +31,21 @@ export const attachChildComponents = (hostLView: LView, components: number[]) =>
 const attachComponent = (hostLView: LView, componentHostIndex: number) => {
   const componentView = getComponentLViewByIndex(componentHostIndex, hostLView);
   const componentTView = componentView[TVIEW];
-  attachTemplate(componentTView);
+  attachTemplate(componentTView, componentView);
   const childComponents = componentTView.components;
   if (childComponents !== null) {
     attachChildComponents(componentView, childComponents);
   }
 };
 
-export const attachTemplate = (tView: TView) => {
+export const attachTemplate = (tView: TView, lView: LView) => {
   const originTemplate = tView.template;
   if (!originTemplate) return ;
   tView.template = (...args) => {
     originTemplate(...args);
     if (args[0] === RenderFlags.Update) {
-      console.log(args, tView.type, 'change');
+      console.log(lView[HOST], (lView[HOST] as any).getBoundingClientRect());
+      CanvasFactory.drawborder((lView[HOST] as any).getBoundingClientRect());
     }
   }
 };
