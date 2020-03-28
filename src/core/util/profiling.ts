@@ -45,8 +45,8 @@ export const attachTemplate = (lView: LView) => {
   tView.template = (...args) => {
     originTemplate(...args);
     if (args[0] === RenderFlags.Update) {
-      // console.log(lView[HOST], (lView[HOST] as any).getBoundingClientRect());
-      CanvasFactory.draw((lView[HOST] as any).getBoundingClientRect());
+      console.log((lView[HOST] as any).localName);
+      CanvasFactory.draw(lView[HOST]);
     }
   }
 };

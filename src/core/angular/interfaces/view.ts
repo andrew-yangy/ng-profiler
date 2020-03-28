@@ -73,7 +73,7 @@ export interface LView extends Array<any> {
    * The host node for this LView instance, if this is a component view.
    * If this is an embedded view, HOST will be null.
    */
-  [HOST]: RElement|null;
+  [HOST]: Element|null;
 
   /**
    * The static data for this view. We need a reference to this so we can easily walk up the
