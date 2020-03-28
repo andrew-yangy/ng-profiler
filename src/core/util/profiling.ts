@@ -4,6 +4,7 @@ import { CONTEXT, HOST, LView, RootContext, TView, TVIEW } from "../angular/inte
 import { getComponentLViewByIndex, readPatchedLView } from "../angular/util/view_utils";
 import { RenderFlags } from "../angular/interfaces/definition";
 import { CanvasFactory } from "./canvas";
+import { scheduleOutsideOfZone } from "./zone";
 
 export const startProfiling = () => {
   const view = findLView();
@@ -45,8 +46,9 @@ export const attachTemplate = (lView: LView) => {
   tView.template = (...args) => {
     originTemplate(...args);
     if (args[0] === RenderFlags.Update) {
-      console.log((lView[HOST] as any).localName);
-      CanvasFactory.draw(lView[HOST]);
+      scheduleOutsideOfZone(() => {
+        CanvasFactory.draw(lView[HOST].localName, lView[HOST].getBoundingClientRect());
+      })
     }
   }
 };

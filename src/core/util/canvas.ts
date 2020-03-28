@@ -34,20 +34,21 @@ class Canvas {
     this.canvas = canvas;
   };
 
-  draw = (host: Element) => {
-    if (this.hostMap.has(host.localName)) {
-      this.hostMap.set(host.localName, this.hostMap.get(host.localName) + 1);
+  draw = (name: string, rect: DOMRect) => {
+    if (this.hostMap.has(name)) {
+      this.hostMap.set(name, this.hostMap.get(name) + 1);
     } else {
-      this.hostMap.set(host.localName, 1);
+      this.hostMap.set(name, 1);
     }
-    this.drawingPool.next({name: host.localName, rect: host.getBoundingClientRect()});
+    this.drawingPool.next({name, rect});
   };
 
   drawborder = ({name, rect}: {name: string, rect: DOMRect}) => {
     if (rect.width === 0 && rect.height === 0) return ;
+
     const ctx = this.canvas.getContext("2d");
     const renderTime = this.hostMap.get(name);
-    ctx.lineWidth = renderTime;
+    ctx.lineWidth = 1 + renderTime / 10;
     ctx.strokeStyle = COLORS[Math.ceil(renderTime/2) - 1];
     ctx.strokeRect(
       rect.x + Math.floor(renderTime / 2),
