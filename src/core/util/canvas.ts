@@ -1,5 +1,6 @@
 import { Subject } from "rxjs";
 import { debounceTime, tap } from "rxjs/operators";
+import { COLORS } from "../constants";
 
 class Canvas {
   canvas: HTMLCanvasElement;
@@ -47,6 +48,7 @@ class Canvas {
     const ctx = this.canvas.getContext("2d");
     const renderTime = this.hostMap.get(name);
     ctx.lineWidth = renderTime;
+    ctx.strokeStyle = COLORS[Math.ceil(renderTime/2) - 1];
     ctx.strokeRect(
       rect.x + Math.floor(renderTime / 2),
       rect.y + Math.floor(renderTime / 2),
@@ -61,4 +63,5 @@ class Canvas {
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }
+
 export const CanvasFactory = new Canvas();
