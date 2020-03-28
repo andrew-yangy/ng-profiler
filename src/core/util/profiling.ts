@@ -31,21 +31,22 @@ export const attachChildComponents = (hostLView: LView, components: number[]) =>
 const attachComponent = (hostLView: LView, componentHostIndex: number) => {
   const componentView = getComponentLViewByIndex(componentHostIndex, hostLView);
   const componentTView = componentView[TVIEW];
-  attachTemplate(componentTView, componentView);
+  attachTemplate(componentView);
   const childComponents = componentTView.components;
   if (childComponents !== null) {
     attachChildComponents(componentView, childComponents);
   }
 };
 
-export const attachTemplate = (tView: TView, lView: LView) => {
+export const attachTemplate = (lView: LView) => {
+  const tView = lView[TVIEW];
   const originTemplate = tView.template;
   if (!originTemplate) return ;
   tView.template = (...args) => {
     originTemplate(...args);
     if (args[0] === RenderFlags.Update) {
-      console.log(lView[HOST], (lView[HOST] as any).getBoundingClientRect());
-      CanvasFactory.drawborder((lView[HOST] as any).getBoundingClientRect());
+      // console.log(lView[HOST], (lView[HOST] as any).getBoundingClientRect());
+      CanvasFactory.draw((lView[HOST] as any).getBoundingClientRect());
     }
   }
 };

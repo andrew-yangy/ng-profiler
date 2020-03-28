@@ -1,6 +1,18 @@
+import { Subject } from "rxjs";
+import { debounceTime, tap } from "rxjs/operators";
+
 class Canvas {
   canvas: HTMLCanvasElement;
+  drawingPool: Subject<DOMRect> = new Subject();
 
+  constructor() {
+    this.drawingPool.pipe(
+      tap(this.drawborder),
+      debounceTime(2000)
+    ).subscribe(() => {
+      this.clear();
+    })
+  }
   create = () => {
     if (this.canvas) return ;
     const canvas: HTMLCanvasElement = window.document.createElement('canvas');
@@ -22,11 +34,20 @@ class Canvas {
     this.canvas = canvas;
   };
 
+  draw = (rect: DOMRect) => {
+    this.drawingPool.next(rect);
+  };
+
   drawborder = (rect: DOMRect) => {
     const ctx = this.canvas.getContext("2d");
     ctx.beginPath();
     ctx.rect(rect.x, rect.y, rect.width, rect.height);
     ctx.stroke();
+  };
+
+  clear() {
+    const ctx = this.canvas.getContext("2d");
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }
 export const CanvasFactory = new Canvas();
