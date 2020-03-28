@@ -28,10 +28,11 @@ export const stopProfiling = () => {
   console.log('stop');
 };
 
-export const attachChildComponents = (hostLView: LView, components: number[], addChildElement) => {
+export const attachChildComponents = (hostLView: LView, components: number[], addChildElement: (children: TreeViewItem[] | TreeViewItem) => void) => {
   const children = [];
 
   const addElement = (treeViewItem) => {
+    treeViewItem.parent = hostLView;
     children.push(treeViewItem);
   };
   for (let i = 0; i < components.length; i++) {
@@ -40,7 +41,7 @@ export const attachChildComponents = (hostLView: LView, components: number[], ad
   addChildElement(children);
 };
 
-const attachComponent = (hostLView: LView, componentHostIndex: number, addElement) => {
+const attachComponent = (hostLView: LView, componentHostIndex: number, addElement: (treeView: TreeViewItem) => void) => {
   const componentView = getComponentLViewByIndex(componentHostIndex, hostLView);
   const componentTView = componentView[TVIEW];
   const treeView = {

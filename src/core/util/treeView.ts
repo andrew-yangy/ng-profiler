@@ -5,6 +5,5 @@ export interface TreeViewItem {
   children: TreeViewItem[];
   currentViewRefIndex?: number;
   parent?: TreeViewItem;
-  isRoot: boolean;
   dynamicEmbeddedViewsChecked?: boolean;
 }
