@@ -48,7 +48,6 @@ class Canvas {
 
     const ctx = this.canvas.getContext("2d");
     const renderTime = this.hostMap.get(name);
-    ctx.lineWidth = 1 + renderTime / 10;
     ctx.strokeStyle = COLORS[Math.ceil(renderTime/2) - 1];
     ctx.strokeRect(
       rect.x + Math.floor(renderTime / 2),
