@@ -7,6 +7,7 @@ module.exports = {
     'content-script': './packages/content-script',
     core: './packages/core',
     background: './packages/background',
+    devtools: './packages/devtools',
     popup: './packages/popup/popup.ts'
   },
   devtool: 'source-map',
@@ -30,6 +31,7 @@ module.exports = {
   plugins: [
     new CopyPlugin([
       { from: 'manifest.json', to: 'manifest.json' },
+      { from: 'devtools.html', to: 'devtools.html' },
       { from: 'popup.html', to: 'popup.html' },
     ]),
   ]

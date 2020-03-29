@@ -21,14 +21,14 @@ function handleMessage(e: MessageEvent) {
   }
 
   let content: AngularInfo | string;
+  const view = findLView();
   if (data.type === MessageType.IS_IVY) {
-    const view = findLView();
     content = {
       isIvy: !!view,
       version: findAngularVersion(view)
     }
   } else if (data.type === MessageType.TOGGLE_PROFILING) {
-    data.content ? startProfiling() : stopProfiling();
+    data.content && !!view ? startProfiling() : stopProfiling();
   }
 
   postMessage(createMessage(data.type, MessageMethod.Response, content), '*');
