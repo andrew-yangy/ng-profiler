@@ -16,7 +16,7 @@ export function readPatchedLView(target: any): LView|null {
 
 export function findAngularVersion(view: LView) {
   try {
-    return view[CHILD_HEAD][HOST]['attributes'][0].value;
+    return (view[CHILD_HEAD][HOST] as any).getAttribute('ng-version');
   } catch (e) {}
 }
 
