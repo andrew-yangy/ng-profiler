@@ -4,10 +4,10 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
   mode:'development',
   entry: {
-    'content-script': './src/content-script',
-    core: './src/core',
-    background: './src/background',
-    popup: './src/popup/popup.ts'
+    'content-script': './packages/content-script',
+    core: './packages/core',
+    background: './packages/background',
+    popup: './packages/popup/popup.ts'
   },
   devtool: 'source-map',
   cache: true,
