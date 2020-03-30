@@ -1,5 +1,5 @@
 <mat-tab-group mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4">
   <mat-tab label="Component Tree">
-    <component-tree></component-tree>
+    <component-tree [componentTree]="componentTreeView | async"></component-tree>
   </mat-tab>
 </mat-tab-group>

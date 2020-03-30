@@ -28,9 +28,7 @@ const injectScript = (path: string, onLoadHandler?: () => void) => {
 
 const onInjectedScriptLoaded = () => {
   chrome.storage.local.get('ngProfilerEnabled', ({ngProfilerEnabled}) => {
-    observeMessage<boolean>(
-      createMessage(MessageType.TOGGLE_PROFILING, MessageMethod.Request, ngProfilerEnabled)
-    )
+    handler[MessageType.TOGGLE_PROFILING]({content: ngProfilerEnabled});
   });
 };
 
@@ -38,15 +36,22 @@ injectScript('core.bundle.js', onInjectedScriptLoaded);
 
 chrome.runtime.onMessage.addListener( (request: Message) => {
   if (request.method !== MessageMethod.Request) return;
-  if (request.type === MessageType.IS_IVY) {
+  handler[request.type](request);
+});
+
+const handler = {
+  [MessageType.IS_IVY]: () => {
     observeMessage<AngularInfo>(
       createMessage(MessageType.IS_IVY, MessageMethod.Request)
     ).subscribe(info => {
       chrome.runtime.sendMessage(createMessage<AngularInfo>(MessageType.IS_IVY, MessageMethod.Response, info))
     });
-  } else if (request.type === MessageType.TOGGLE_PROFILING) {
+  },
+  [MessageType.TOGGLE_PROFILING]: (request) => {
     observeMessage<boolean>(
       createMessage(MessageType.TOGGLE_PROFILING, MessageMethod.Request, request.content)
-    )
+    ).subscribe(tree => {
+      chrome.runtime.sendMessage(createMessage(MessageType.TOGGLE_PROFILING, MessageMethod.Response, tree))
+    });
   }
-});
+};

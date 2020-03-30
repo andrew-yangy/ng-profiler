@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { SerializedTreeViewItem } from "../../../../../core/util/treeView";
 
 @Component({
   selector: 'component-tree',
@@ -6,51 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./component-tree.component.css']
 })
 export class ComponentTreeComponent implements OnInit {
+  @Input() componentTree: SerializedTreeViewItem;
 
-  componentTree = {
-    "name": "Top Level",
-    "parent": "null",
-    "children": [
-      {
-        "name": "Level 2: A",
-        "parent": "Top Level",
-        "children": [
-          {
-            "name": "Son of A",
-            "parent": "Level 2: A"
-          },
-          {
-            "name": "Daughter of A",
-            "parent": "Level 2: A"
-          }
-        ]
-      },
-      {
-        "name": "Level 2: B",
-        "parent": "Top Level",
-        "children": [
-          {
-            "name": "Son of A",
-            "parent": "Level 2: A"
-          },
-          {
-            "name": "Daughter of A111111111",
-            "parent": "Level 2: A",
-            "children": [
-              {
-                "name": "Son of A",
-                "parent": "Level 2: A"
-              },
-              {
-                "name": "Daughter of A",
-                "parent": "Level 2: A"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  };
   constructor() { }
   ngOnInit() {}
 }

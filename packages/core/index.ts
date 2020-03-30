@@ -20,7 +20,7 @@ function handleMessage(e: MessageEvent) {
     return;
   }
 
-  let content: AngularInfo | string;
+  let content: AngularInfo | any;
   const view = findLView();
   if (data.type === MessageType.IS_IVY) {
     content = {
@@ -28,7 +28,7 @@ function handleMessage(e: MessageEvent) {
       version: findAngularVersion(view)
     }
   } else if (data.type === MessageType.TOGGLE_PROFILING) {
-    data.content && !!view ? startProfiling() : stopProfiling();
+    content = data.content && !!view ? startProfiling() : stopProfiling();
   }
 
   postMessage(createMessage(data.type, MessageMethod.Response, content), '*');
