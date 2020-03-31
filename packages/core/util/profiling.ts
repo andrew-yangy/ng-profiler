@@ -5,25 +5,20 @@ import { getComponentLViewByIndex, readPatchedLView } from "../angular/util/view
 import { RenderFlags } from "../angular/interfaces/definition";
 import { CanvasFactory } from "./canvas";
 import { scheduleOutsideOfZone } from "./zone";
-import { serialiseTreeViewItem, TreeViewItem } from "./treeView";
+import { TreeViewFactory, TreeViewItem } from "./treeView";
 
 export const startProfiling = () => {
   const view = findLView();
   const root = getRootView(view);
   const rootComponent = (root[CONTEXT] as RootContext).components[0];
   const rootComponentLView = readPatchedLView(rootComponent);
-  let serialisedTreeView = null;
 
   CanvasFactory.create();
   const childComponents = rootComponentLView[TVIEW].components;
 
   if (childComponents !== null) {
-    attachChildComponents(rootComponentLView, childComponents, (treeView: TreeViewItem) => {
-      serialisedTreeView = serialiseTreeViewItem(treeView[0]);
-      console.log(serialisedTreeView);
-    });
+    attachChildComponents(rootComponentLView, childComponents, TreeViewFactory.setView);
   }
-  return serialisedTreeView;
 };
 
 export const stopProfiling = () => {

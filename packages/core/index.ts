@@ -3,6 +3,7 @@ import { findLView } from "./angular/render3/context_discovery";
 import { findAngularVersion } from "./angular/util/view_utils";
 import { createMessage } from "../communication/messager";
 import { startProfiling, stopProfiling } from "./util/profiling";
+import { TreeViewFactory } from "./util/treeView";
 
 export interface AngularInfo {
   isIvy: boolean,
@@ -28,7 +29,10 @@ function handleMessage(e: MessageEvent) {
       version: findAngularVersion(view)
     }
   } else if (data.type === MessageType.TOGGLE_PROFILING) {
-    content = data.content && !!view ? startProfiling() : stopProfiling();
+    data.content && !!view ? startProfiling() : stopProfiling();
+  } else if (data.type === MessageType.COMPONENT_TREE) {
+    content = TreeViewFactory.serialisedTreeView;
+    console.log(content);
   }
 
   postMessage(createMessage(data.type, MessageMethod.Response, content), '*');

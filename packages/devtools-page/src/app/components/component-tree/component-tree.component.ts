@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { SerializedTreeViewItem } from "../../shared/tree-diagram/tree-diagram.component";
+import { Component, OnInit } from '@angular/core';
+import { MessageType } from "../../../../../communication/message.type";
+import { Connection } from "../../channel/connection";
 
 @Component({
   selector: 'component-tree',
@@ -7,8 +8,11 @@ import { SerializedTreeViewItem } from "../../shared/tree-diagram/tree-diagram.c
   styleUrls: ['./component-tree.component.css']
 })
 export class ComponentTreeComponent implements OnInit {
-  @Input() componentTree: SerializedTreeViewItem;
-
-  constructor() { }
-  ngOnInit() {}
+  componentTreeView = this.connection.subscribeType(MessageType.COMPONENT_TREE);
+  constructor(private connection: Connection) { }
+  ngOnInit() {
+    this.componentTreeView.subscribe(res => {
+      console.log(res);
+    })
+  }
 }

@@ -2,10 +2,12 @@ const connections = {};
 
 chrome.runtime.onConnect.addListener(function (port) {
   const extensionListener = function (message, sender) {
-    // other message handling
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+      tabs[0] && chrome.tabs.sendMessage(tabs[0].id, message);
+    });
   };
   connections[port.name] = port;
-  console.log(port);
+
   // Listen to messages sent from the DevTools page
   port.onMessage.addListener(extensionListener);
 

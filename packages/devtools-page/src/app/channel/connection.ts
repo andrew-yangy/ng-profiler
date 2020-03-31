@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { fromEventPattern } from "rxjs";
+import { fromEventPattern, Observable } from "rxjs";
 import { filter, pluck } from "rxjs/operators";
 import { Message, MessageMethod, MessageType } from "../../../../communication/message.type";
+import { SerializedTreeViewItem } from "../shared/tree-diagram/tree-diagram.component";
 declare const chrome: any;
 
 
@@ -26,7 +27,11 @@ export class Connection {
   }
 
   subscribeType(type: MessageType) {
-    return fromEventPattern<Message>(
+    this.bgConnection.postMessage({
+      type,
+      method: MessageMethod.Request,
+    });
+    return fromEventPattern(
       handler => this.bgConnection.onMessage.addListener(handler),
       handler => this.bgConnection.onMessage.removeListener(handler),
       (request) => (request)

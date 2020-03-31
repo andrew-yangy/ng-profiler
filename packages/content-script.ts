@@ -50,8 +50,13 @@ const handler = {
   [MessageType.TOGGLE_PROFILING]: (request) => {
     observeMessage<boolean>(
       createMessage(MessageType.TOGGLE_PROFILING, MessageMethod.Request, request.content)
+    )
+  },
+  [MessageType.COMPONENT_TREE]: () => {
+    observeMessage<boolean>(
+      createMessage(MessageType.COMPONENT_TREE, MessageMethod.Request)
     ).subscribe(tree => {
-      chrome.runtime.sendMessage(createMessage(MessageType.TOGGLE_PROFILING, MessageMethod.Response, tree))
+      chrome.runtime.sendMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, tree))
     });
   }
 };
