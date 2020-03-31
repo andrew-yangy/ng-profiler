@@ -1,6 +1,12 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 
+export interface SerializedTreeViewItem {
+  name: string;
+  children?: SerializedTreeViewItem[];
+  onPush?: boolean;
+}
+
 @Component({
   selector: 'tree-diagram',
   templateUrl: './tree-diagram.component.html',
@@ -27,17 +33,16 @@ export class TreeDiagramComponent implements AfterViewInit {
       .attr("stroke-width", 1.5);
 
     this.gNode = svg.append("g")
-      .attr("cursor", "pointer")
-      .attr("pointer-events", "all");
+      .attr("user-select", "none");
     this.render(this.root);
   }
 
   render(source) {
     const margin = {
       top: 20,
-      right: 0,
-      bottom: 20,
-      left: 120
+      right: 100 + this.rectW,
+      bottom: 200,
+      left: 100
     };
     const tree = d3.tree().nodeSize([120, 60]);
     const svg = d3.select(this.svg.nativeElement);
@@ -52,14 +57,21 @@ export class TreeDiagramComponent implements AfterViewInit {
 
     let left = this.root;
     let right = this.root;
+    let top = this.root;
+    let bottom = this.root;
     this.root.eachBefore(node => {
+      // console.log(node);
       if (node.x < left.x) left = node;
       if (node.x > right.x) right = node;
+      if (node.y < top.y) top = node;
+      if (node.y > bottom.y) bottom = node;
     });
-    const width = 960 - margin.right - margin.left;
-    const height = 800 - margin.top - margin.bottom;
+
+    const width = right.x - left.x + margin.right + margin.left;
+    const height = bottom.y - top.y + margin.top + margin.bottom;
     this.root.x0 = 0;
-    this.root.y0 = height / 2;
+    this.root.y0 = height/2;
+
     const transition = svg.transition()
       .duration(duration)
       .attr("viewBox", [left.x - margin.left, - margin.top, width, height])
@@ -86,7 +98,8 @@ export class TreeDiagramComponent implements AfterViewInit {
       .attr("stroke-width", 1)
       .style("fill", (d) => {
         return d._children ? "lightsteelblue" : "#fff";
-      });
+      })
+      .style("cursor", (d) => d._children ? "pointer" : "normal");
 
     nodeEnter.append("text")
       .attr("x", this.rectW / 2)

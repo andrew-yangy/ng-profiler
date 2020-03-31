@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { SerializedTreeViewItem } from "../../../../../core/util/treeView";
+import { SerializedTreeViewItem } from "../../shared/tree-diagram/tree-diagram.component";
 
 @Component({
   selector: 'component-tree',

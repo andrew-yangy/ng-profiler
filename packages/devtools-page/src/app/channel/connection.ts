@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { fromEventPattern } from "rxjs";
-import { filter, map, pluck } from "rxjs/operators";
+import { filter, pluck } from "rxjs/operators";
 import { Message, MessageMethod, MessageType } from "../../../../communication/message.type";
 declare const chrome: any;
 
@@ -16,7 +16,13 @@ export class Connection {
   }
 
   connect() {
-    this.bgConnection = chrome.runtime.connect({ name: chrome.devtools.inspectedWindow.tabId.toString() });
+    try {
+      const name = chrome.devtools.inspectedWindow.tabId.toString() || 'tab';
+      this.bgConnection = chrome.runtime.connect({ name });
+      console.log(name, this.bgConnection);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   subscribeType(type: MessageType) {
@@ -27,7 +33,8 @@ export class Connection {
     ).pipe(
       filter(request => request.method === MessageMethod.Response),
       filter(request => request.type === type),
-      pluck('content')
+      pluck('content'),
+      filter(Boolean),
     )
   }
 }

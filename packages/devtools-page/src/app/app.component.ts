@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
   constructor(private connection: Connection) {}
 
   ngOnInit() {
-    this.componentTreeView.subscribe(res => {
+    this.connection.subscribeType(MessageType.TOGGLE_PROFILING).subscribe(res => {
       console.log(res);
     })
   }
