@@ -1,11 +1,8 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   Input,
-  OnChanges,
   OnInit,
-  SimpleChanges,
   ViewChild
 } from '@angular/core';
 import * as d3 from 'd3';
@@ -21,24 +18,22 @@ export interface SerializedTreeViewItem {
   templateUrl: './tree-diagram.component.html',
   styleUrls: ['./tree-diagram.component.css']
 })
-export class TreeDiagramComponent implements OnInit, OnChanges {
+export class TreeDiagramComponent implements OnInit {
   @ViewChild('svgContainer', { static: true }) private svg: ElementRef;
-  @Input() treeData;
+  @Input()
+  set treeData(tree: SerializedTreeViewItem ) {
+    if(!tree) return ;
+    this.root = d3.hierarchy(tree);
+
+    this.root.descendants().forEach((d, i) => {
+      d.id = i;
+      d._children = d.children;
+    });
+    this.render(this.root);
+  };
   gLink; gNode; root; rectW = 100; rectH = 30;
   constructor() { }
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes['treeData']) {
-      console.log(this.treeData);
-      if(!this.treeData) return ;
-      this.root = d3.hierarchy(this.treeData);
 
-      this.root.descendants().forEach((d, i) => {
-        d.id = i;
-        d._children = d.children;
-      });
-      this.render(this.root);
-    }
-  }
   ngOnInit(): void {
     const svg = d3.select(this.svg.nativeElement);
     console.log(svg, this.svg.nativeElement);
@@ -101,6 +96,7 @@ export class TreeDiagramComponent implements OnInit, OnChanges {
       .attr("transform", d => `translate(${source.x0},${source.y0})`)
       .attr("fill-opacity", 0)
       .attr("stroke-opacity", 0)
+      .style("cursor", (d) => d._children ? "pointer" : "default")
       .on("click", d => {
         d.children = d.children ? null : d._children;
         this.render(d);
@@ -113,8 +109,7 @@ export class TreeDiagramComponent implements OnInit, OnChanges {
       .attr("stroke-width", 1)
       .style("fill", (d) => {
         return d._children ? "lightsteelblue" : "#fff";
-      })
-      .style("cursor", (d) => d._children ? "pointer" : "normal");
+      });
 
     nodeEnter.append("text")
       .attr("x", this.rectW / 2)

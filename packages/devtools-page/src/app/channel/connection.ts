@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
-import { fromEventPattern, Observable } from "rxjs";
-import { filter, pluck } from "rxjs/operators";
+import { Injectable, NgZone } from '@angular/core';
+import { from } from "rxjs";
 import { Message, MessageMethod, MessageType } from "../../../../communication/message.type";
-import { SerializedTreeViewItem } from "../shared/tree-diagram/tree-diagram.component";
+
 declare const chrome: any;
 
 
@@ -12,7 +11,7 @@ declare const chrome: any;
 export class Connection {
   bgConnection;
 
-  constructor() {
+  constructor(private zone: NgZone) {
     this.connect();
   }
 
@@ -27,19 +26,12 @@ export class Connection {
   }
 
   subscribeType(type: MessageType) {
-    this.bgConnection.postMessage({
-      type,
-      method: MessageMethod.Request,
-    });
-    return fromEventPattern(
-      handler => this.bgConnection.onMessage.addListener(handler),
-      handler => this.bgConnection.onMessage.removeListener(handler),
-      (request) => (request)
-    ).pipe(
-      filter(request => request.method === MessageMethod.Response),
-      filter(request => request.type === type),
-      pluck('content'),
-      filter(Boolean),
-    )
+    return from(new Promise((resolve) => {
+      this.bgConnection.onMessage.addListener((message: Message) => {
+        if (message.method === MessageMethod.Response && message.type === type) {
+          resolve(message.content)
+        }
+      })
+    }));
   }
 }
