@@ -36,11 +36,10 @@ export class TreeDiagramComponent implements OnInit {
 
   ngOnInit(): void {
     const svg = d3.select(this.svg.nativeElement);
-    console.log(svg, this.svg.nativeElement);
     this.gLink = svg.append("g")
       .attr("fill", "none")
       .attr("stroke", "#555")
-      .attr("stroke-opacity", 0.4)
+      .attr("stroke-opacity", 0.6)
       .attr("stroke-width", 1.5);
 
     this.gNode = svg.append("g")
@@ -54,9 +53,9 @@ export class TreeDiagramComponent implements OnInit {
       bottom: 200,
       left: 100
     };
-    const tree = d3.tree().nodeSize([120, 60]);
+    const tree = d3.tree().nodeSize([120, 100]);
     const svg = d3.select(this.svg.nativeElement);
-    const diagonal = d3.linkHorizontal().x(d => d.x + this.rectW / 2).y(d => d.y + this.rectH / 2);
+    const diagonal = d3.linkVertical().x(d => d.xl).y(d => d.yl);
 
     const duration = d3.event && d3.event.altKey ? 2500 : 250;
     const nodes = this.root.descendants().reverse();
@@ -137,18 +136,27 @@ export class TreeDiagramComponent implements OnInit {
     // Enter any new links at the parent's previous position.
     const linkEnter = link.enter().append("path")
       .attr("x", this.rectW / 2)
-      .attr("y", this.rectH / 2)
-      .attr("d", d => {
-        const o = {x: source.x0, y: source.y0};
-        return diagonal({source: o, target: o});
-      });
+      .attr("y", this.rectH / 2);
 
     // Transition links to their new position.
     link.merge(linkEnter).transition(transition)
-      .attr("d", diagonal);
+      .duration(duration)
+      .attr("d", d => {
+        const source = {
+          ...d.source,
+          xl: d.source.x + this.rectW / 2,
+          yl: d.source.y + this.rectH
+        };
+        const target = {
+          ...d.target,
+          xl: d.target.x + this.rectW / 2,
+          yl: d.target.y
+        };
+        return diagonal({source, target});
+      });
 
     // Transition exiting nodes to the parent's new position.
-    link.exit().transition(transition).remove()
+    link.exit().transition(transition).duration(duration).remove()
       .attr("d", d => {
         const o = {x: source.x, y: source.y};
         return diagonal({source: o, target: o});
