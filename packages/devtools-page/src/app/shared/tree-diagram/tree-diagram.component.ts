@@ -31,7 +31,7 @@ export class TreeDiagramComponent implements OnInit {
     });
     this.render(this.root);
   };
-  gLink; gNode; root; rectW = 100; rectH = 30;
+  gLink; gNode; root; rectW = 150; rectH = 30;
   constructor() { }
 
   ngOnInit(): void {
@@ -53,7 +53,7 @@ export class TreeDiagramComponent implements OnInit {
       bottom: 200,
       left: 100
     };
-    const tree = d3.tree().nodeSize([120, 100]);
+    const tree = d3.tree().nodeSize([this.rectW + 10, this.rectH + 100]);
     const svg = d3.select(this.svg.nativeElement);
     const diagonal = d3.linkVertical().x(d => d.xl).y(d => d.yl);
 
