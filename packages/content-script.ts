@@ -1,5 +1,5 @@
 import { Message, MessageMethod, MessageType } from "./communication/message.type";
-import { createMessage, observeMessage } from "./communication/messager";
+import { createMessage, observeMessage, observeRequest } from "./communication/messager";
 import { AngularInfo } from "./core";
 
 const scriptInjection = new Set<string>();
@@ -37,6 +37,10 @@ injectScript('core.bundle.js', onInjectedScriptLoaded);
 chrome.runtime.onMessage.addListener( (request: Message) => {
   if (request.method !== MessageMethod.Request) return;
   handler[request.type](request);
+});
+
+observeRequest<string>(MessageType.UPDATE_TREE).subscribe(componentId => {
+  chrome.runtime.sendMessage(createMessage<string>(MessageType.UPDATE_TREE, MessageMethod.Response, componentId))
 });
 
 const handler = {

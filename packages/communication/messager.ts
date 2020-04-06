@@ -20,3 +20,13 @@ export const observeMessage = <T>(message: Message): Observable<T> => {
       pluck<Message<T>, T>('content')
     )
 };
+
+export const observeRequest = <T>(type: MessageType): Observable<T> => {
+  return fromEvent<MessageEvent>(window, 'message')
+    .pipe(
+      pluck<MessageEvent, Message<T>>('data'),
+      filter(m => m.method === MessageMethod.Response),
+      filter(m => m.type === type),
+      pluck<Message<T>, T>('content')
+    )
+};

@@ -1,10 +1,11 @@
 import { Subject } from "rxjs";
 import { debounceTime, tap } from "rxjs/operators";
-import { COLORS } from "../constants";
+import { COLORS, NG_PROFILER_ID } from "../constants";
+import { HOST, LView } from "../angular/interfaces/view";
 
 class Canvas {
   canvas: HTMLCanvasElement;
-  drawingPool: Subject<{name: string, rect: DOMRect}> = new Subject();
+  drawingPool: Subject<{uuid: string, rect: DOMRect}> = new Subject();
   hostMap = new Map<string, number>();
 
   constructor() {
@@ -34,20 +35,22 @@ class Canvas {
     this.canvas = canvas;
   };
 
-  draw = (name: string, rect: DOMRect) => {
-    if (this.hostMap.has(name)) {
-      this.hostMap.set(name, this.hostMap.get(name) + 1);
+  draw = (lView: LView) => {
+    const uuid = lView[HOST][NG_PROFILER_ID];
+    const rect = lView[HOST].getBoundingClientRect();
+    if (this.hostMap.has(uuid)) {
+      this.hostMap.set(uuid, this.hostMap.get(uuid) + 1);
     } else {
-      this.hostMap.set(name, 1);
+      this.hostMap.set(uuid, 1);
     }
-    this.drawingPool.next({name, rect});
+    this.drawingPool.next({uuid, rect});
   };
 
-  drawborder = ({name, rect}: {name: string, rect: DOMRect}) => {
+  drawborder = ({uuid, rect}: {uuid: string, rect: DOMRect}) => {
     if (rect.width === 0 && rect.height === 0) return ;
 
     const ctx = this.canvas.getContext("2d");
-    const renderTime = this.hostMap.get(name);
+    const renderTime = this.hostMap.get(uuid);
     ctx.strokeStyle = COLORS[Math.ceil(renderTime/2) - 1];
     ctx.strokeRect(
       rect.x + Math.floor(renderTime / 2),

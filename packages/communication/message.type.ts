@@ -16,5 +16,6 @@ export enum MessageMethod {
 export enum MessageType {
   TOGGLE_PROFILING,
   IS_IVY,
-  COMPONENT_TREE
+  COMPONENT_TREE,
+  UPDATE_TREE,
 }

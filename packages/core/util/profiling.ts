@@ -14,7 +14,6 @@ export const startProfiling = () => {
   CanvasFactory.create();
 
   TreeViewFactory.attachComponent(rootComponentLView, TreeViewFactory.setView)
-  console.log(rootComponentLView);
 };
 
 export const stopProfiling = () => {

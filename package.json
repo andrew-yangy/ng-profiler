@@ -8,7 +8,9 @@
   },
   "author": "Andrew Yang",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "shortid": "^2.2.15"
+  },
   "devDependencies": {
     "@angular/core": "^9.0.6",
     "@types/chrome": "0.0.83",

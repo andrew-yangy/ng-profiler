@@ -5,3 +5,5 @@ export const COLORS = [
   '#fadb14',
   '#f5222d'
 ];
+
+export const NG_PROFILER_ID = '__ng_profiler_component_id';

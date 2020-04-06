@@ -1,16 +1,13 @@
-import {
-  Component,
-  ElementRef,
-  Input,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 
 export interface SerializedTreeViewItem {
+  id: string;
   name: string;
-  children?: SerializedTreeViewItem[];
-  onPush?: boolean;
+  tagName: string;
+  children: SerializedTreeViewItem[];
+  parent: string;
+  onPush: boolean;
 }
 
 @Component({
@@ -21,17 +18,22 @@ export interface SerializedTreeViewItem {
 export class TreeDiagramComponent implements OnInit {
   @ViewChild('svgContainer', { static: true }) private svg: ElementRef;
   @Input()
+  get treeData() {
+    return this._treeData;
+  }
   set treeData(tree: SerializedTreeViewItem ) {
     if(!tree) return ;
+    this._treeData = tree;
     this.root = d3.hierarchy(tree);
 
-    this.root.descendants().forEach((d, i) => {
-      d.id = i;
+    this.root.descendants().forEach((d) => {
+      d.id = d.data.id;
       d._children = d.children;
     });
     this.render(this.root);
   };
-  gLink; gNode; root; rectW = 150; rectH = 30;
+  _treeData; gLink; gNode; root; rectW = 150; rectH = 30; rect;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -69,7 +71,6 @@ export class TreeDiagramComponent implements OnInit {
     let top = this.root;
     let bottom = this.root;
     this.root.eachBefore(node => {
-      // console.log(node);
       if (node.x < left.x) left = node;
       if (node.x > right.x) right = node;
       if (node.y < top.y) top = node;
@@ -88,7 +89,7 @@ export class TreeDiagramComponent implements OnInit {
 
     // Update the nodes…
     const node = this.gNode.selectAll("g")
-      .data(nodes, d => d.id);
+      .data(nodes, d => d.data.id);
 
     // Enter any new nodes at the parent's previous position.
     const nodeEnter = node.enter().append("g")
@@ -101,14 +102,13 @@ export class TreeDiagramComponent implements OnInit {
         this.render(d);
       });
 
-    nodeEnter.append("rect")
+    this.rect = nodeEnter.append("rect")
+      .attr('id', (d) => 'r' + d.data.id)
       .attr("width", this.rectW)
       .attr("height", this.rectH)
       .attr("stroke", "black")
       .attr("stroke-width", 1)
-      .style("fill", (d) => {
-        return d._children ? "lightsteelblue" : "#fff";
-      });
+      .style("fill", (d) => d._children ? "lightsteelblue" : "#fff");
 
     nodeEnter.append("text")
       .attr("x", this.rectW / 2)
@@ -135,6 +135,7 @@ export class TreeDiagramComponent implements OnInit {
 
     // Enter any new links at the parent's previous position.
     const linkEnter = link.enter().append("path")
+      .attr('id', (d) => 'l' + d.target.data.id)
       .attr("x", this.rectW / 2)
       .attr("y", this.rectH / 2);
 

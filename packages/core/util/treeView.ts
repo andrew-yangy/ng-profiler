@@ -5,6 +5,10 @@ import { CanvasFactory } from "./canvas";
 import { ACTIVE_INDEX, ActiveIndexFlag, CONTAINER_HEADER_OFFSET, LContainer } from "../angular/interfaces/container";
 import { isLContainer } from "../angular/interfaces/type_checks";
 import { getComponentLViewByIndex } from "../angular/util/view_utils";
+import { createMessage } from "../../communication/messager";
+import { MessageMethod, MessageType } from "../../communication/message.type";
+import { generate } from 'shortid';
+import { NG_PROFILER_ID } from "../constants";
 
 export interface TreeViewItem {
   lView: LView;
@@ -13,6 +17,7 @@ export interface TreeViewItem {
 }
 
 export interface SerializedTreeViewItem {
+  id: string;
   name: string;
   tagName: string;
   children: SerializedTreeViewItem[];
@@ -33,8 +38,9 @@ class TreeView {
   ): SerializedTreeViewItem {
     if (!treeViewItem) return ;
     return {
+      id: treeViewItem.lView[HOST][NG_PROFILER_ID],
       name: this.getComponentName(treeViewItem.lView),
-      tagName: treeViewItem.lView && treeViewItem.lView[HOST].localName,
+      tagName: treeViewItem.lView && treeViewItem.lView[HOST]?.localName,
       children: treeViewItem.children && treeViewItem.children.map(loopTreeViewItem =>
         this.serialiseTreeViewItem(loopTreeViewItem)
       ),
@@ -115,13 +121,17 @@ class TreeView {
 
   private attachTemplate = (lView: LView) => {
     const tView = lView[TVIEW];
+    if (lView[HOST] && !lView[HOST][NG_PROFILER_ID]) {
+      lView[HOST][NG_PROFILER_ID] = generate();
+    }
     const originTemplate = tView.template;
     if (!originTemplate) return ;
     tView.template = (...args) => {
       originTemplate(...args);
-      if (args[0] === RenderFlags.Update) {
+      if (args[0] === RenderFlags.Update && lView[HOST]) {
         scheduleOutsideOfZone(() => {
-          CanvasFactory.draw(lView[HOST].localName, lView[HOST].getBoundingClientRect());
+          CanvasFactory.draw(lView);
+          postMessage(createMessage(MessageType.UPDATE_TREE, MessageMethod.Response, lView[HOST][NG_PROFILER_ID]), '*');
         })
       }
     }
