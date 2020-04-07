@@ -7,3 +7,5 @@ export const COLORS = [
 ];
 
 export const NG_PROFILER_ID = '__ng_profiler_component_id';
+
+export const DRAWER_THRESHOLD = 20;

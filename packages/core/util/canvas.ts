@@ -1,6 +1,6 @@
 import { Subject } from "rxjs";
 import { debounceTime, tap } from "rxjs/operators";
-import { COLORS, NG_PROFILER_ID } from "../constants";
+import { COLORS, DRAWER_THRESHOLD, NG_PROFILER_ID } from "../constants";
 import { HOST, LView } from "../angular/interfaces/view";
 
 class Canvas {
@@ -43,7 +43,9 @@ class Canvas {
     } else {
       this.hostMap.set(uuid, 1);
     }
-    this.drawingPool.next({uuid, rect});
+    if (this.hostMap.get(uuid) < DRAWER_THRESHOLD) {
+      this.drawingPool.next({uuid, rect});
+    }
   };
 
   drawborder = ({uuid, rect}: {uuid: string, rect: DOMRect}) => {
