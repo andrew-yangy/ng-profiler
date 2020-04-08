@@ -51,7 +51,7 @@ class TreeView {
   }
 
   getComponentName = (lView: LView | LContainer) => {
-    return lView[CONTEXT].constructor.name;
+    return lView[CONTEXT].constructor.name.length > 1 ? lView[CONTEXT].constructor.name : lView[HOST] && lView[HOST]['localName'];
   };
 
   attachChildComponents = (hostLView: LView, components: number[], addChildElement: (children: TreeViewItem[] | TreeViewItem) => void) => {
