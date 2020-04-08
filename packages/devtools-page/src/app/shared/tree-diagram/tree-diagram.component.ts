@@ -13,7 +13,7 @@ export interface SerializedTreeViewItem {
 @Component({
   selector: 'tree-diagram',
   templateUrl: './tree-diagram.component.html',
-  styleUrls: ['./tree-diagram.component.css']
+  styleUrls: ['./tree-diagram.component.scss']
 })
 export class TreeDiagramComponent implements OnInit {
   @ViewChild('svgContainer', { static: true }) private svg: ElementRef;
@@ -168,5 +168,13 @@ export class TreeDiagramComponent implements OnInit {
       d.x0 = d.x;
       d.y0 = d.y;
     });
+  }
+  zoomIn() {
+    const currentHeight = this.svg.nativeElement.clientHeight;
+    this.svg.nativeElement.style.height = `${currentHeight * 2}px`;
+  }
+  zoomOut() {
+    const currentHeight = this.svg.nativeElement.clientHeight;
+    this.svg.nativeElement.style.height = `${currentHeight / 2}px`;
   }
 }
