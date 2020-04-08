@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Message, MessageMethod, MessageType } from "../../../../../communication/message.type";
 import { Connection } from "../../channel/connection";
 import { debounceTime, tap } from "rxjs/operators";
-import { COLORS } from "../../../../../core/constants";
+import { COLORS, UPDATE_DEBOUNCE_TIME } from "../../../../../core/constants";
 import { Subject } from "rxjs";
 import * as d3 from 'd3';
 
@@ -36,7 +36,7 @@ export class ComponentTreeComponent implements OnInit {
     });
     this.drawingPool.pipe(
       tap(this.updateRect),
-      debounceTime(2000),
+      debounceTime(UPDATE_DEBOUNCE_TIME),
     ).subscribe(() => {
       this.resetRect();
     })

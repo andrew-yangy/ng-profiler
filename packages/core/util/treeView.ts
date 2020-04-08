@@ -27,7 +27,7 @@ export interface SerializedTreeViewItem {
 
 class TreeView {
   serialisedTreeView: SerializedTreeViewItem;
-
+  rectMap = new Map();
   setView = (treeView: TreeViewItem) => {
     this.serialisedTreeView = this.serialiseTreeViewItem(treeView.children[0]);
     console.log(this.serialisedTreeView);
@@ -126,12 +126,16 @@ class TreeView {
     }
     const originTemplate = tView.template;
     if (!originTemplate) return ;
+    const uuid = lView[HOST] && lView[HOST][NG_PROFILER_ID];
     tView.template = (...args) => {
       originTemplate(...args);
       if (args[0] === RenderFlags.Update && lView[HOST]) {
         scheduleOutsideOfZone(() => {
-          CanvasFactory.draw(lView);
-          postMessage(createMessage(MessageType.UPDATE_TREE, MessageMethod.Response, lView[HOST][NG_PROFILER_ID]), '*');
+          if (!this.rectMap.has(uuid)) {
+            this.rectMap.set(uuid, lView[HOST].getBoundingClientRect());
+          }
+          CanvasFactory.draw(uuid, this.rectMap.get(uuid));
+          postMessage(createMessage(MessageType.UPDATE_TREE, MessageMethod.Response, uuid), '*');
         })
       }
     }

@@ -1,6 +1,6 @@
 import { Subject } from "rxjs";
 import { debounceTime, tap } from "rxjs/operators";
-import { COLORS, DRAWER_THRESHOLD, NG_PROFILER_ID } from "../constants";
+import { COLORS, DRAWER_THRESHOLD, NG_PROFILER_ID, UPDATE_DEBOUNCE_TIME } from "../constants";
 import { HOST, LView } from "../angular/interfaces/view";
 
 class Canvas {
@@ -11,7 +11,7 @@ class Canvas {
   constructor() {
     this.drawingPool.pipe(
       tap(this.drawborder),
-      debounceTime(2000)
+      debounceTime(UPDATE_DEBOUNCE_TIME)
     ).subscribe(() => {
       this.clear();
     })
@@ -35,9 +35,7 @@ class Canvas {
     this.canvas = canvas;
   };
 
-  draw = (lView: LView) => {
-    const uuid = lView[HOST][NG_PROFILER_ID];
-    const rect = lView[HOST].getBoundingClientRect();
+  draw = (uuid: string, rect: DOMRect) => {
     if (this.hostMap.has(uuid)) {
       this.hostMap.set(uuid, this.hostMap.get(uuid) + 1);
     } else {
