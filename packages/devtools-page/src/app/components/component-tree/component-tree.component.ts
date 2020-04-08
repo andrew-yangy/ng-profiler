@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Message, MessageMethod, MessageType } from "../../../../../communication/message.type";
 import { Connection } from "../../channel/connection";
 import { debounceTime, tap } from "rxjs/operators";
@@ -12,10 +12,10 @@ import * as d3 from 'd3';
   styleUrls: ['./component-tree.component.css']
 })
 export class ComponentTreeComponent implements OnInit {
-  componentTreeView = this.connection.subscribeType(MessageType.COMPONENT_TREE);
+  componentTreeView;
   drawingPool: Subject<string> = new Subject();
   nodeMap = new Map();
-  constructor(private connection: Connection) { }
+  constructor(private connection: Connection, private cdr: ChangeDetectorRef) { }
   ngOnInit() {
     this.connection.bgConnection.postMessage({
       type: MessageType.COMPONENT_TREE,
@@ -23,7 +23,12 @@ export class ComponentTreeComponent implements OnInit {
     });
 
     this.connection.bgConnection.onMessage.addListener((message: Message<string>) => {
-      if (message.method === MessageMethod.Response && message.type === MessageType.UPDATE_TREE) {
+      if (message.method !== MessageMethod.Response) return ;
+
+      if (message.type === MessageType.COMPONENT_TREE) {
+        this.componentTreeView = message.content;
+        this.cdr.detectChanges();
+      } else if (message.type === MessageType.UPDATE_TREE) {
         const id = message.content;
         if (this.nodeMap.has(id)) {
           const previous = this.nodeMap.get(id);

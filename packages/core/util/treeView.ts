@@ -30,6 +30,7 @@ class TreeView {
   rectMap = new Map();
   setView = (treeView: TreeViewItem) => {
     this.serialisedTreeView = this.serialiseTreeViewItem(treeView.children[0]);
+    postMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, this.serialisedTreeView), '*');
     console.log(this.serialisedTreeView);
   };
 

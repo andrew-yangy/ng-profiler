@@ -1,6 +1,7 @@
 import { Message, MessageMethod, MessageType } from "./communication/message.type";
 import { createMessage, observeMessage, observeRequest } from "./communication/messager";
 import { AngularInfo } from "./core";
+import { filter } from "rxjs/operators";
 
 const scriptInjection = new Set<string>();
 
@@ -39,7 +40,11 @@ chrome.runtime.onMessage.addListener( (request: Message) => {
   handler[request.type](request);
 });
 
-observeRequest<string>(MessageType.UPDATE_TREE).subscribe(componentId => {
+observeRequest<string>(MessageType.COMPONENT_TREE).subscribe(tree => {
+  chrome.runtime.sendMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, tree))
+});
+
+observeRequest<string>(MessageType.UPDATE_TREE).pipe(filter(id => !!id)).subscribe(componentId => {
   chrome.runtime.sendMessage(createMessage<string>(MessageType.UPDATE_TREE, MessageMethod.Response, componentId))
 });
 

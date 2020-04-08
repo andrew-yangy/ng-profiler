@@ -1,6 +1,4 @@
 import { Injectable, NgZone } from '@angular/core';
-import { from } from "rxjs";
-import { Message, MessageMethod, MessageType } from "../../../../communication/message.type";
 
 declare const chrome: any;
 
@@ -23,15 +21,5 @@ export class Connection {
     } catch (e) {
       console.log(e);
     }
-  }
-
-  subscribeType(type: MessageType) {
-    return from(new Promise((resolve) => {
-      this.bgConnection.onMessage.addListener((message: Message) => {
-        if (message.method === MessageMethod.Response && message.type === type) {
-          resolve(message.content)
-        }
-      })
-    }));
   }
 }

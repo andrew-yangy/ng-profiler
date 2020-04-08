@@ -1,7 +1,6 @@
 import { Subject } from "rxjs";
 import { debounceTime, tap } from "rxjs/operators";
-import { COLORS, DRAWER_THRESHOLD, NG_PROFILER_ID, UPDATE_DEBOUNCE_TIME } from "../constants";
-import { HOST, LView } from "../angular/interfaces/view";
+import { COLORS, DRAWER_THRESHOLD, UPDATE_DEBOUNCE_TIME } from "../constants";
 
 class Canvas {
   canvas: HTMLCanvasElement;
