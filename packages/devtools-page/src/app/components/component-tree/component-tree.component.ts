@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { Message, MessageMethod, MessageType } from "../../../../../communication/message.type";
 import { Connection } from "../../channel/connection";
 import { debounceTime, tap } from "rxjs/operators";
@@ -15,7 +15,7 @@ export class ComponentTreeComponent implements OnInit {
   componentTreeView;
   drawingPool: Subject<string> = new Subject();
   nodeMap = new Map();
-  constructor(private connection: Connection, private cdr: ChangeDetectorRef) { }
+  constructor(private connection: Connection, private zone: NgZone) { }
   ngOnInit() {
     this.connection.bgConnection.postMessage({
       type: MessageType.COMPONENT_TREE,
@@ -26,8 +26,7 @@ export class ComponentTreeComponent implements OnInit {
       if (message.method !== MessageMethod.Response) return ;
 
       if (message.type === MessageType.COMPONENT_TREE) {
-        this.componentTreeView = message.content;
-        this.cdr.detectChanges();
+        this.zone.run(() => this.componentTreeView = message.content);
       } else if (message.type === MessageType.UPDATE_TREE) {
         const id = message.content;
         if (this.nodeMap.has(id)) {
@@ -65,5 +64,5 @@ export class ComponentTreeComponent implements OnInit {
         .attr('stroke-width', 1.5);
       map.set(key, {rect, link, time: 1})
     });
-  }
+  };
 }

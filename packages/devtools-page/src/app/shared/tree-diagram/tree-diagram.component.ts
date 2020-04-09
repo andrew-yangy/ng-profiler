@@ -1,5 +1,6 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import { NodeService } from "../../core/node.service";
 
 export interface SerializedTreeViewItem {
   id: string;
@@ -32,9 +33,9 @@ export class TreeDiagramComponent implements OnInit {
     });
     this.render(this.root);
   };
-  _treeData; gLink; gNode; root; rectW = 150; rectH = 30; rect;
+  _treeData; gLink; gNode; root; preSelected; rectW = 150; rectH = 30; rect;
 
-  constructor() { }
+  constructor(private nodeService: NodeService, private zone: NgZone) { }
 
   ngOnInit(): void {
     const svg = d3.select(this.svg.nativeElement);
@@ -96,11 +97,8 @@ export class TreeDiagramComponent implements OnInit {
       .attr("transform", d => `translate(${source.x0},${source.y0})`)
       .attr("fill-opacity", 0)
       .attr("stroke-opacity", 0)
-      .style("cursor", (d) => d._children ? "pointer" : "default")
-      .on("click", d => {
-        d.children = d.children ? null : d._children;
-        this.render(d);
-      });
+      .style("cursor", "pointer")
+      .on("click", this.clickNode);
 
     this.rect = nodeEnter.append("rect")
       .attr('id', (d) => 'r' + d.data.id)
@@ -169,10 +167,22 @@ export class TreeDiagramComponent implements OnInit {
       d.y0 = d.y;
     });
   }
+
+  clickNode = (d) => {
+    d.children = d.children ? null : d._children;
+    this.render(d);
+    this.zone.run(() => this.nodeService.selectNode(d));
+    this.preSelected && this.preSelected.style("fill", (d) => d._children ? "lightsteelblue" : "#fff");
+    const selected = d3.select(`#r${d.id}`);
+    selected.style('fill', () => 'lightgray');
+    this.preSelected = selected;
+  };
+
   zoomIn() {
     const currentHeight = this.svg.nativeElement.clientHeight;
     this.svg.nativeElement.style.height = `${currentHeight * 2}px`;
   }
+
   zoomOut() {
     const currentHeight = this.svg.nativeElement.clientHeight;
     this.svg.nativeElement.style.height = `${currentHeight / 2}px`;

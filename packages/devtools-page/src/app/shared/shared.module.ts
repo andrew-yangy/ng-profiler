@@ -5,11 +5,15 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { SplitPaneComponent } from "./split-pane/split-pane.component";
+import { MatInputModule } from "@angular/material/input";
+import { MatTreeModule } from "@angular/material/tree";
 
 const MATERIAL_MODULES = [
   MatTabsModule,
   MatButtonModule,
-  MatIconModule
+  MatIconModule,
+  MatInputModule,
+  MatTreeModule
 ];
 
 const CUSTOM_COMPONENTS = [

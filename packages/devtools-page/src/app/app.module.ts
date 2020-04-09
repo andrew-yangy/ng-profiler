@@ -5,11 +5,13 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentTreeComponent } from './components/component-tree/component-tree.component';
 import { SharedModule } from "./shared/shared.module";
+import { ComponentInfoComponent } from './components/component-info/component-info.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ComponentTreeComponent
+    ComponentTreeComponent,
+    ComponentInfoComponent
   ],
   imports: [
     BrowserModule,

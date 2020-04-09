@@ -5,6 +5,10 @@
         <component-tree></component-tree>
       </ng-container>
       <div split-pane-secondary>
+        <ng-container *ngIf="node.nodeData | async as nodeData; else noData">
+          <component-info [node]="nodeData"></component-info>
+        </ng-container>
+        <ng-template #noData>No component selected</ng-template>
       </div>
     </split-pane>
   </mat-tab>

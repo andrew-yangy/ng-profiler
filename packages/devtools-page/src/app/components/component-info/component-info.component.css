@@ -1,0 +1,7 @@
+:host {
+  display: block;
+  padding: 10px;
+}
+.children-item {
+  padding-left: 20px;
+}

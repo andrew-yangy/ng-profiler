@@ -1,0 +1,23 @@
+<mat-form-field>
+  <mat-label>Name</mat-label>
+  <input matInput value="{{node.name}}" readonly>
+</mat-form-field>
+<mat-form-field>
+  <mat-label>Tag Name</mat-label>
+  <input matInput value="{{node.tagName}}" readonly>
+</mat-form-field>
+<mat-form-field>
+  <mat-label>Parent</mat-label>
+  <input matInput value="{{node.parent}}" readonly>
+</mat-form-field>
+<mat-form-field>
+  <mat-label>onPush</mat-label>
+  <input matInput value="{{node.onPush}}" readonly>
+</mat-form-field>
+<ng-container *ngIf="node.children?.length">
+  <strong>Children</strong>
+  <ng-container *ngFor="let child of node.children">
+    <div class="children-item">{{child.name}}</div>
+  </ng-container>
+</ng-container>
+
