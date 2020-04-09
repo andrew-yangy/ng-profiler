@@ -2,9 +2,14 @@
   "name": "ng-profiler",
   "version": "1.0.0",
   "description": "",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "webpack",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "devtool-page:build:watch": "lerna run build:watch --stream"
   },
   "author": "Andrew Yang",
   "license": "ISC",
@@ -15,6 +20,7 @@
     "@angular/core": "^9.0.6",
     "@types/chrome": "0.0.83",
     "copy-webpack-plugin": "^5.1.1",
+    "lerna": "^3.20.2",
     "rxjs": "^6.5.4",
     "ts-loader": "^5.4.5",
     "typescript": "^3.8.3",
