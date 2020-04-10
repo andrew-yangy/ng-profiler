@@ -1,5 +1,5 @@
-<mat-tab-group mat-stretch-tabs>
-  <mat-tab label="Component Tree">
+<nz-tabset [nzTabBarStyle]="{'margin': 0}" [nzType]="'card'">
+  <nz-tab nzTitle="Component Tree">
     <split-pane>
       <ng-container split-pane-primary>
         <component-tree></component-tree>
@@ -11,5 +11,5 @@
         <ng-template #noData>No component selected</ng-template>
       </div>
     </split-pane>
-  </mat-tab>
-</mat-tab-group>
+  </nz-tab>
+</nz-tabset>

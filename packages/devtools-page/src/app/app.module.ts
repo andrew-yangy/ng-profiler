@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentTreeComponent } from './components/component-tree/component-tree.component';
 import { SharedModule } from "./shared/shared.module";
 import { ComponentInfoComponent } from './components/component-info/component-info.component';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -16,6 +17,8 @@ import { ComponentInfoComponent } from './components/component-info/component-in
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
     SharedModule
   ],
   providers: [],

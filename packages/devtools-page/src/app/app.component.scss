@@ -1,8 +1,9 @@
-.mat-tab-group {
+nz-tabset {
   height: 100%;
   ::ng-deep {
-    .mat-tab-body-wrapper {
-      height: 100%;
+    .ant-tabs-content,
+    .ant-tabs-tabpane {
+      height: 100%
     }
   }
 }

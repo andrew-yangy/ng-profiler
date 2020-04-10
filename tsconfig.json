@@ -11,7 +11,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "baseUrl": "./packages",
+    "baseUrl": ".",
     "outDir": "./dist/"
   },
   "exclude": [

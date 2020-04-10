@@ -1,23 +1,36 @@
-<mat-form-field>
-  <mat-label>Name</mat-label>
-  <input matInput value="{{node.name}}" readonly>
-</mat-form-field>
-<mat-form-field>
-  <mat-label>Tag Name</mat-label>
-  <input matInput value="{{node.tagName}}" readonly>
-</mat-form-field>
-<mat-form-field>
-  <mat-label>Parent</mat-label>
-  <input matInput value="{{node.parent}}" readonly>
-</mat-form-field>
-<mat-form-field>
-  <mat-label>onPush</mat-label>
-  <input matInput value="{{node.onPush}}" readonly>
-</mat-form-field>
-<ng-container *ngIf="node.children?.length">
-  <strong>Children</strong>
-  <ng-container *ngFor="let child of node.children">
-    <div class="children-item">{{child.name}}</div>
-  </ng-container>
-</ng-container>
+<nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzTabBarStyle]="{'margin': 0}">
+  <nz-tab nzTitle="Component Details">
+    <nz-descriptions nzBordered nzSize="small" [nzColumn]="1">
+      <nz-descriptions-item nzTitle="Name">{{node.name}}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Tag Name">{{node.tagName}}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="onPush">
+        <nz-switch [ngModel]="node.onPush" [nzDisabled]="true"></nz-switch>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Parent">{{node.parent}}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Children" *ngIf="node.children?.length">
+        <ng-container *ngFor="let child of node.children">
+          <div>{{child.name}}</div>
+        </ng-container>
+      </nz-descriptions-item>
+    </nz-descriptions>
+  </nz-tab>
+  <nz-tab nzTitle="Properties">
+    <form nz-form [formGroup]="form">
+      <nz-form-item *ngFor="let state of node.context | keyvalue" style="margin: 0">
+        <nz-form-label [nzSpan]="8">{{state.key}}</nz-form-label>
+        <ng-container [ngSwitch]="checkType(form.get(state.key).value)">
+          <nz-form-control [nzSpan]="16" *ngSwitchCase="'number'">
+            <nz-input-number [formControlName]="state.key"></nz-input-number>
+          </nz-form-control>
+          <nz-form-control [nzSpan]="16" *ngSwitchCase="'boolean'">
+            <nz-switch [formControlName]="state.key"></nz-switch>
+          </nz-form-control>
+          <nz-form-control [nzSpan]="16" *ngSwitchDefault>
+            <input nz-input [formControlName]="state.key">
+          </nz-form-control>
+        </ng-container>
+      </nz-form-item >
+    </form>
+  </nz-tab>
+</nz-tabset>
 

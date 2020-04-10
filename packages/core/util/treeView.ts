@@ -23,6 +23,7 @@ export interface SerializedTreeViewItem {
   children: SerializedTreeViewItem[];
   parent: string;
   onPush: boolean;
+  context: any;
 }
 
 class TreeView {
@@ -31,7 +32,7 @@ class TreeView {
   setView = (treeView: TreeViewItem) => {
     this.serialisedTreeView = this.serialiseTreeViewItem(treeView.children[0]);
     postMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, this.serialisedTreeView), '*');
-    console.log(treeView.children[0], this.serialisedTreeView);
+    console.log(this.serialisedTreeView);
   };
 
   serialiseTreeViewItem(
@@ -46,12 +47,25 @@ class TreeView {
         this.serialiseTreeViewItem(loopTreeViewItem)
       ),
       parent: this.getComponentName(treeViewItem.lView[PARENT]),
+      context: this.getContextState(treeViewItem.lView[CONTEXT]),
       onPush: treeViewItem.lView && (treeViewItem.lView[FLAGS] & LViewFlags.CheckAlways) === 0
     };
   }
 
   getComponentName = (lView: LView | LContainer) => {
     return lView[CONTEXT].constructor.name.length > 1 ? lView[CONTEXT].constructor.name : lView[HOST] && lView[HOST]['localName'];
+  };
+
+  getContextState = (context) => {
+    return Object.keys(context).reduce((acc, key) => {
+      if (typeof context[key] !== 'object'
+        // TODO: handle object
+        // || context[key] && Object.getPrototypeOf(context[key]).isPrototypeOf(Object)
+      ) {
+        acc[key] = context[key];
+      }
+      return acc;
+    }, {});
   };
 
   attachChildComponents = (hostLView: LView, components: number[], addChildElement: (children: TreeViewItem[] | TreeViewItem) => void) => {
