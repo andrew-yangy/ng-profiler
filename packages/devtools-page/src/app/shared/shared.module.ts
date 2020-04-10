@@ -1,28 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TreeDiagramComponent } from './tree-diagram/tree-diagram.component';
-import { MatTabsModule } from "@angular/material/tabs";
-import { MatButtonModule } from "@angular/material/button";
-import { MatIconModule } from "@angular/material/icon";
 import { SplitPaneComponent } from "./split-pane/split-pane.component";
-import { MatInputModule } from "@angular/material/input";
-import { MatTreeModule } from "@angular/material/tree";
-import { MatExpansionModule } from "@angular/material/expansion";
 import { NzTabsModule } from "ng-zorro-antd/tabs";
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
-
-const MATERIAL_MODULES = [
-  MatTabsModule,
-  MatButtonModule,
-  MatIconModule,
-  MatInputModule,
-  MatTreeModule,
-  MatExpansionModule
-];
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 const ZORRO_MODULES = [
   NzTabsModule,
@@ -30,7 +17,9 @@ const ZORRO_MODULES = [
   NzSwitchModule,
   NzFormModule,
   NzLayoutModule,
-  NzInputNumberModule
+  NzInputNumberModule,
+  NzButtonModule,
+  NzIconModule
 ];
 
 const CUSTOM_COMPONENTS = [
@@ -44,12 +33,10 @@ const CUSTOM_COMPONENTS = [
   ],
   imports: [
     CommonModule,
-    ...MATERIAL_MODULES,
     ...ZORRO_MODULES
   ],
   exports: [
     ...CUSTOM_COMPONENTS,
-    ...MATERIAL_MODULES,
     ...ZORRO_MODULES
   ]
 })
