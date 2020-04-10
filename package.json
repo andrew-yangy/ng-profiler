@@ -7,17 +7,14 @@
     "packages/*"
   ],
   "scripts": {
+    "cleanup": "./cleanup.sh",
     "build": "webpack",
     "watch": "webpack --watch",
     "devtool-page:build:watch": "lerna run build:watch --stream"
   },
   "author": "Andrew Yang",
   "license": "ISC",
-  "dependencies": {
-    "shortid": "^2.2.15"
-  },
   "devDependencies": {
-    "@angular/core": "^9.0.6",
     "@types/chrome": "0.0.83",
     "copy-webpack-plugin": "^5.1.1",
     "lerna": "^3.20.2",
