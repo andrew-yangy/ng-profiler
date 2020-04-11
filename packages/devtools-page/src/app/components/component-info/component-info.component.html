@@ -1,6 +1,7 @@
 <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [nzTabBarStyle]="{'margin': 0}">
   <nz-tab nzTitle="Component Details">
     <nz-descriptions nzBordered nzSize="small" [nzColumn]="1">
+      <nz-descriptions-item nzTitle="ID">{{node.id}}</nz-descriptions-item>
       <nz-descriptions-item nzTitle="Name">{{node.name}}</nz-descriptions-item>
       <nz-descriptions-item nzTitle="Tag Name">{{node.tagName}}</nz-descriptions-item>
       <nz-descriptions-item nzTitle="onPush">

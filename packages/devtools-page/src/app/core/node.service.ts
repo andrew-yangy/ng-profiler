@@ -18,7 +18,6 @@ export class NodeService {
   }
 
   selectNode(node) {
-    console.log(node);
     this.selected$.next(node);
   }
 }

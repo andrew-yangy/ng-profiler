@@ -67,5 +67,10 @@ const handler = {
     ).subscribe(tree => {
       chrome.runtime.sendMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, tree))
     });
-  }
+  },
+  [MessageType.APPLY_CHANGES]: (request) => {
+    observeMessage<boolean>(
+      createMessage(MessageType.APPLY_CHANGES, MessageMethod.Request, request.content)
+    )
+  },
 };

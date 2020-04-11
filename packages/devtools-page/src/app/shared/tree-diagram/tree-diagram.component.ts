@@ -26,10 +26,13 @@ export class TreeDiagramComponent implements OnInit {
     if(!tree) return ;
     this._treeData = tree;
     this.root = d3.hierarchy(tree);
-
-    this.root.descendants().forEach((d) => {
+    this.root.descendants().forEach((d, i) => {
       d.id = d.data.id;
+      d.index = i;
       d._children = d.children;
+      if (this.preSelected?.index === i ) {
+        this.zone.run(() => this.nodeService.selectNode(d));
+      }
     });
     this.render(this.root);
   };
@@ -172,10 +175,13 @@ export class TreeDiagramComponent implements OnInit {
     d.children = d.children ? null : d._children;
     this.render(d);
     this.zone.run(() => this.nodeService.selectNode(d));
-    this.preSelected && this.preSelected.style("fill", (d) => d._children ? "lightsteelblue" : "#fff");
+    this.preSelected?.selected?.style("fill", (d) => d._children ? "lightsteelblue" : "#fff");
     const selected = d3.select(`#r${d.id}`);
     selected.style('fill', () => 'lightgray');
-    this.preSelected = selected;
+    this.preSelected = {
+      index: d.index,
+      selected
+    };
   };
 
   zoomIn() {

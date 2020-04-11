@@ -1,6 +1,6 @@
 export const MESSAGE_SOURCE = 'NG_PROFILER';
 
-export interface Message<T = {}> {
+export interface Message<T = any> {
   id?: string;
   source?: string;
   type?: MessageType;
@@ -18,4 +18,5 @@ export enum MessageType {
   IS_IVY,
   COMPONENT_TREE,
   UPDATE_TREE,
+  APPLY_CHANGES
 }

@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { MessageMethod, MessageType } from "../../../../../communication/message.type";
+import { Connection } from "../../channel/connection";
 
 @Component({
   selector: 'component-info',
@@ -14,12 +16,11 @@ export class ComponentInfoComponent implements OnInit {
   }
   set node(n) {
     this._node = n;
-    console.log(n.context);
     this.form = this.fb.group(n.context);
   };
   _node;
   form: FormGroup;
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private connection: Connection) {
   }
 
   ngOnInit(): void {
@@ -34,7 +35,14 @@ export class ComponentInfoComponent implements OnInit {
   }
 
   applyChanges() {
-    console.log(this.form.value);
+    this.connection.bgConnection.postMessage({
+      type: MessageType.APPLY_CHANGES,
+      method: MessageMethod.Request,
+      content: {
+        ...this._node,
+        context: this.form.value
+      }
+    });
   }
 
   resetForm(e: MouseEvent): void {

@@ -32,6 +32,8 @@ function handleMessage(e: MessageEvent) {
     data.content && !!view ? startProfiling() : stopProfiling();
   } else if (data.type === MessageType.COMPONENT_TREE) {
     content = TreeViewFactory.serialisedTreeView;
+  } else if (data.type === MessageType.APPLY_CHANGES) {
+    TreeViewFactory.applyChanges(data.content);
   }
 
   postMessage(createMessage(data.type, MessageMethod.Response, content), '*');

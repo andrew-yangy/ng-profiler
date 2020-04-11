@@ -9,6 +9,7 @@ import { createMessage } from "../../communication/messager";
 import { MessageMethod, MessageType } from "../../communication/message.type";
 import { generate } from 'shortid';
 import { NG_PROFILER_ID } from "../constants";
+declare const ng;
 
 export interface TreeViewItem {
   lView: LView;
@@ -29,6 +30,7 @@ export interface SerializedTreeViewItem {
 class TreeView {
   serialisedTreeView: SerializedTreeViewItem;
   rectMap = new Map();
+  treeLViewMap = new Map();
   setView = (treeView: TreeViewItem) => {
     this.serialisedTreeView = this.serialiseTreeViewItem(treeView.children[0]);
     postMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, this.serialisedTreeView), '*');
@@ -66,6 +68,14 @@ class TreeView {
       }
       return acc;
     }, {});
+  };
+
+  applyChanges = (data: SerializedTreeViewItem) => {
+    const lView = this.treeLViewMap.get(data.id);
+    Object.keys(data.context).forEach(key => {
+      lView[CONTEXT][key] = data.context[key];
+    });
+    ng.applyChanges(lView[CONTEXT]);
   };
 
   attachChildComponents = (hostLView: LView, components: number[], addChildElement: (children: TreeViewItem[] | TreeViewItem) => void) => {
@@ -142,6 +152,7 @@ class TreeView {
     const originTemplate = tView.template;
     if (!originTemplate) return ;
     const uuid = lView[HOST] && lView[HOST][NG_PROFILER_ID];
+    this.treeLViewMap.set(uuid, lView);
     tView.template = (...args) => {
       originTemplate(...args);
       if (args[0] === RenderFlags.Update && lView[HOST]) {
