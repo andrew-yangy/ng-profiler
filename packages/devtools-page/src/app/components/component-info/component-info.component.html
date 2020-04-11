@@ -15,7 +15,7 @@
     </nz-descriptions>
   </nz-tab>
   <nz-tab nzTitle="Properties">
-    <form nz-form [formGroup]="form">
+    <form nz-form [formGroup]="form" (ngSubmit)="applyChanges()">
       <nz-form-item *ngFor="let state of node.context | keyvalue" style="margin: 0">
         <nz-form-label [nzSpan]="8">{{state.key}}</nz-form-label>
         <ng-container [ngSwitch]="checkType(form.get(state.key).value)">
@@ -29,7 +29,11 @@
             <input nz-input [formControlName]="state.key">
           </nz-form-control>
         </ng-container>
-      </nz-form-item >
+      </nz-form-item>
+      <div class="form-buttons" *ngIf="!isEmpty(node.context)">
+        <button nz-button (click)="resetForm($event)" [disabled]="form.pristine">Reset</button>
+        <button nz-button nzType="primary">Apply Changes</button>
+      </div>
     </form>
   </nz-tab>
 </nz-tabset>

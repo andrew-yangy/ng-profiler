@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from "@angular/forms";
 @Component({
   selector: 'component-info',
   templateUrl: './component-info.component.html',
-  styleUrls: ['./component-info.component.css'],
+  styleUrls: ['./component-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ComponentInfoComponent implements OnInit {
@@ -14,6 +14,7 @@ export class ComponentInfoComponent implements OnInit {
   }
   set node(n) {
     this._node = n;
+    console.log(n.context);
     this.form = this.fb.group(n.context);
   };
   _node;
@@ -26,5 +27,18 @@ export class ComponentInfoComponent implements OnInit {
 
   checkType(value) {
     return typeof(value);
+  }
+
+  isEmpty(o) {
+    return !Object.keys(o).length;
+  }
+
+  applyChanges() {
+    console.log(this.form.value);
+  }
+
+  resetForm(e: MouseEvent): void {
+    e.preventDefault();
+    this.form.reset(this.node.context);
   }
 }
