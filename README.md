@@ -2,7 +2,7 @@
 
 Angular Profiler is a developer tool to power-up Angular development workflow by providing a series of debugging tools.
 
-![](./img/ng-profiler.gif)
+![](images/ng-profiler.gif)
 
 ## How it can help us having a better developing experience && building a faster application
 
@@ -11,19 +11,19 @@ Angular Profiler provides multiple ways to help us debugging over-triggered chan
 
 #### 1. Highlight the components that triggered CD and indicate CD times with different colors.
  
-![](./img/highlight.png)
+![](images/highlight.png)
 
 #### 2. Visual detecting changes in a component tree  
 The component tree will show you how angular components are rendered and updated
 
-![](./img/component-tree.gif)
+![](images/component-tree.gif)
 
 ### Inspect and change component state
 Select a component in the component tree, then you can see all the states of this component in the `properties` tab.
 You can update the components right away without changing your codes and waiting webpack to compile to see your changes anymore.  
 How awesome is that! :sunglasses:
 
-![](./img/state.png)
+![](images/state.png)
 
 > The Chrome extension is still under review, in the meanwhile, you can:
 ### Try it locally

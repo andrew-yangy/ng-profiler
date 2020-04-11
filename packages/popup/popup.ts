@@ -7,14 +7,24 @@ function onDOMContentLoaded() {
   const errorElem = document.getElementById('error');
   const switcherElem = document.getElementById('switcher');
 
-  chrome.storage.local.get('ngProfilerEnabled', ({ngProfilerEnabled}) => {
-    (traceSwitcherCbx as HTMLInputElement).checked = !!ngProfilerEnabled;
-    switcherElem.classList.add('loaded');
+  chrome.storage.local.get('ngProfilerEnabled', (content) => {
+    (traceSwitcherCbx as HTMLInputElement).checked = !!content.ngProfilerEnabled;
   });
 
   traceSwitcherCbx.addEventListener('change', e => {
     const enabled = (e.target as HTMLInputElement).checked;
     chrome.storage.local.set({ngProfilerEnabled: enabled});
+    chrome.browserAction.setIcon({
+      path: enabled ? {
+        '16': 'images/icon16.png',
+        '48': 'images/icon48.png',
+        '128': 'images/icon128.png',
+      } : {
+        "16": "images/icon16_disabled.png",
+        "48": "images/icon48_disabled.png",
+        "148": "images/icon148_disabled.png"
+      },
+    });
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
       const message: Message<boolean> = {
         type: MessageType.TOGGLE_PROFILING,

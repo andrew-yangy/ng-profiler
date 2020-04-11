@@ -54,11 +54,6 @@
         border-radius: 50%;
     }
 
-    .switch-label.loaded .slider,
-    .switch-label.loaded .slider:before {
-        transition: 0.4s;
-    }
-
     input:checked + .slider {
         background-color: #66bb6a;
     }
@@ -93,13 +88,13 @@
 <h4>Angular Profiler</h4>
 <p id="description"></p>
 <div class="actions">
-    <label class="switch-label" id="switcher">
-        Enable Profiler
-        <span class="switch">
+  <label class="switch-label" id="switcher">
+      Enable Profiler
+    <span class="switch">
       <input type="checkbox" id="traceSwitcherCbx"/>
       <span class="slider"></span>
     </span>
-    </label>
+  </label>
 </div>
 <div id="error"></div>
 

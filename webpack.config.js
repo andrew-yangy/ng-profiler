@@ -33,6 +33,7 @@ module.exports = {
       { from: 'manifest.json', to: 'manifest.json' },
       { from: 'devtools.html', to: 'devtools.html' },
       { from: 'popup.html', to: 'popup.html' },
+      { from: 'images', to: 'images' },
     ]),
   ]
 };

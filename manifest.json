@@ -14,9 +14,20 @@
     "scripts": ["background.bundle.js"]
   },
   "devtools_page": "devtools.html",
-  "permissions": ["storage"],
+  "permissions": ["activeTab", "storage"],
   "browser_action": {
+    "default_icon": {
+      "16": "images/icon16_disabled.png",
+      "48": "images/icon48_disabled.png",
+      "148": "images/icon148_disabled.png"
+    },
+    "default_title": "Angular Profiler",
     "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
   },
   "web_accessible_resources": ["node_modules/*", "dist/*", "*"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
