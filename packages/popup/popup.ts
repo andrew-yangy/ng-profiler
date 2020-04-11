@@ -25,7 +25,7 @@ function onDOMContentLoaded() {
         "148": "images/icon148_disabled.png"
       },
     });
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
       const message: Message<boolean> = {
         type: MessageType.TOGGLE_PROFILING,
         method: MessageMethod.Request,
@@ -35,7 +35,7 @@ function onDOMContentLoaded() {
     });
   });
 
-  chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+  chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     const message: Message = {
       type: MessageType.IS_IVY,
       method: MessageMethod.Request,

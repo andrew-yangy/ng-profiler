@@ -24,6 +24,9 @@ export class TreeDiagramComponent implements OnInit {
   }
   set treeData(tree: SerializedTreeViewItem ) {
     if(!tree) return ;
+    if (!this.gLink || !this.gNode) {
+      this.init();
+    }
     this._treeData = tree;
     this.root = d3.hierarchy(tree);
     this.root.descendants().forEach((d, i) => {
@@ -41,6 +44,12 @@ export class TreeDiagramComponent implements OnInit {
   constructor(private nodeService: NodeService, private zone: NgZone) { }
 
   ngOnInit(): void {
+    if (!this.gLink || !this.gNode) {
+      this.init();
+    }
+  }
+
+  init() {
     const svg = d3.select(this.svg.nativeElement);
     this.gLink = svg.append("g")
       .attr("fill", "none")
@@ -158,8 +167,8 @@ export class TreeDiagramComponent implements OnInit {
       });
 
     // Transition exiting nodes to the parent's new position.
-    link.exit().transition(transition).duration(duration).remove()
-      .attr("d", d => {
+    link.exit().remove()
+      .attr("l", () => {
         const o = {x: source.x, y: source.y};
         return diagonal({source: o, target: o});
       });

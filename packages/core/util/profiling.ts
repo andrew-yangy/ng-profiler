@@ -13,9 +13,10 @@ export const startProfiling = () => {
 
   CanvasFactory.create();
 
+  TreeViewFactory.enable();
   TreeViewFactory.attachComponent(rootComponentLView, TreeViewFactory.setView)
 };
 
 export const stopProfiling = () => {
-  console.log('stop');
+  TreeViewFactory.disable();
 };

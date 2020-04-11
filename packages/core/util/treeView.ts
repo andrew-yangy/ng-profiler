@@ -7,7 +7,7 @@ import { isLContainer } from "../angular/interfaces/type_checks";
 import { getComponentLViewByIndex } from "../angular/util/view_utils";
 import { createMessage } from "../../communication/messager";
 import { MessageMethod, MessageType } from "../../communication/message.type";
-import { generate } from 'shortid';
+import { generate } from "shortid";
 import { NG_PROFILER_ID } from "../constants";
 declare const ng;
 
@@ -29,11 +29,15 @@ export interface SerializedTreeViewItem {
 
 class TreeView {
   serialisedTreeView: SerializedTreeViewItem;
-  rectMap = new Map();
-  treeLViewMap = new Map();
+  rectMap = new Map<string, DOMRect>();
+  treeLViewMap = new Map<string, LView>();
+  enabled: boolean;
+
+  enable = () => this.enabled = true;
+  disable = () => this.enabled = false;
+
   setView = (treeView: TreeViewItem) => {
     this.serialisedTreeView = this.serialiseTreeViewItem(treeView.children[0]);
-    postMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, this.serialisedTreeView), '*');
     console.log(this.serialisedTreeView);
   };
 
@@ -152,9 +156,10 @@ class TreeView {
     const originTemplate = tView.template;
     if (!originTemplate) return ;
     const uuid = lView[HOST] && lView[HOST][NG_PROFILER_ID];
-    this.treeLViewMap.set(uuid, lView);
+    uuid && this.treeLViewMap.set(uuid, lView);
     tView.template = (...args) => {
       originTemplate(...args);
+      if (!this.enabled) return ;
       if (args[0] === RenderFlags.Update && lView[HOST]) {
         scheduleOutsideOfZone(() => {
           if (!this.rectMap.has(uuid)) {
@@ -166,5 +171,6 @@ class TreeView {
       }
     }
   };
+
 }
 export const TreeViewFactory = new TreeView();

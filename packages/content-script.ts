@@ -1,5 +1,5 @@
 import { Message, MessageMethod, MessageType } from "./communication/message.type";
-import { createMessage, observeMessage, observeRequest } from "./communication/messager";
+import { createMessage, observeMessage, observeResponse } from "./communication/messager";
 import { AngularInfo } from "./core";
 import { filter } from "rxjs/operators";
 
@@ -28,23 +28,21 @@ const injectScript = (path: string, onLoadHandler?: () => void) => {
 };
 
 const onInjectedScriptLoaded = () => {
-  chrome.storage.local.get('ngProfilerEnabled', (content) => {
-    handler[MessageType.TOGGLE_PROFILING]({content});
+  chrome.storage.local.get('ngProfilerEnabled', (data) => {
+    handler[MessageType.TOGGLE_PROFILING]({content: data.ngProfilerEnabled});
   });
 };
 
 injectScript('core.bundle.js', onInjectedScriptLoaded);
 
+// listen from popup and devtool page
 chrome.runtime.onMessage.addListener( (request: Message) => {
   if (request.method !== MessageMethod.Request) return;
   handler[request.type](request);
 });
 
-observeRequest<string>(MessageType.COMPONENT_TREE).subscribe(tree => {
-  chrome.runtime.sendMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, tree))
-});
-
-observeRequest<string>(MessageType.UPDATE_TREE).pipe(filter(id => !!id)).subscribe(componentId => {
+// listen core/index and send to background -> devtool page
+observeResponse<string>(MessageType.UPDATE_TREE).pipe(filter(id => !!id)).subscribe(componentId => {
   chrome.runtime.sendMessage(createMessage<string>(MessageType.UPDATE_TREE, MessageMethod.Response, componentId))
 });
 
@@ -56,10 +54,13 @@ const handler = {
       chrome.runtime.sendMessage(createMessage<AngularInfo>(MessageType.IS_IVY, MessageMethod.Response, info))
     });
   },
-  [MessageType.TOGGLE_PROFILING]: (request) => {
+  [MessageType.TOGGLE_PROFILING]: (request: {content: boolean}) => {
+    // send to core/index
     observeMessage<boolean>(
       createMessage(MessageType.TOGGLE_PROFILING, MessageMethod.Request, request.content)
-    )
+    );
+    // send to background -> devtool page
+    chrome.runtime.sendMessage(createMessage<boolean>(MessageType.TOGGLE_PROFILING, MessageMethod.Request, request.content));
   },
   [MessageType.COMPONENT_TREE]: () => {
     observeMessage<boolean>(

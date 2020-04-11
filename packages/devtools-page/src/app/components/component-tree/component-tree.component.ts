@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Message, MessageMethod, MessageType } from "../../../../../communication/message.type";
 import { Connection } from "../../channel/connection";
 import { debounceTime, tap } from "rxjs/operators";
@@ -13,30 +13,37 @@ import { SerializedTreeViewItem } from "../../shared/tree-diagram/tree-diagram.c
   styleUrls: ['./component-tree.component.css']
 })
 export class ComponentTreeComponent implements OnInit {
-  componentTreeView: SerializedTreeViewItem;
+  componentTreeView: SerializedTreeViewItem | null;
   drawingPool: Subject<string> = new Subject();
   nodeMap = new Map();
   constructor(private connection: Connection, private zone: NgZone) { }
   ngOnInit() {
-    this.connection.bgConnection.postMessage({
-      type: MessageType.COMPONENT_TREE,
-      method: MessageMethod.Request,
-    });
-
+    // TODO: clean this shit
     this.connection.bgConnection.onMessage.addListener((message: Message<SerializedTreeViewItem | string>) => {
-      if (message.method !== MessageMethod.Response) return ;
-
-      if (message.type === MessageType.COMPONENT_TREE) {
-        this.zone.run(() => this.componentTreeView = <SerializedTreeViewItem>message.content);
-      } else if (message.type === MessageType.UPDATE_TREE) {
-        const id = <string>message.content;
-        if (this.nodeMap.has(id)) {
-          const previous = this.nodeMap.get(id);
-          this.nodeMap.set(id, {rect: previous.rect, link: previous.link, time: previous.time + 1});
-        } else {
-          this.nodeMap.set(id, {rect: d3.select(`#r${id}`), link: d3.select(`#l${id}`), time: 1});
+      if (message.method === MessageMethod.Request) {
+        if (message.type === MessageType.TOGGLE_PROFILING) {
+          if (message.content) {
+            this.connection.bgConnection.postMessage({
+              type: MessageType.COMPONENT_TREE,
+              method: MessageMethod.Request,
+            });
+          } else {
+            this.zone.run(() => {this.componentTreeView = null});
+          }
         }
-        this.drawingPool.next(id);
+      } else {
+        if (message.type === MessageType.COMPONENT_TREE) {
+          this.zone.run(() => this.componentTreeView = <SerializedTreeViewItem>message.content);
+        } else if (message.type === MessageType.UPDATE_TREE) {
+          const id = <string>message.content;
+          if (this.nodeMap.has(id)) {
+            const previous = this.nodeMap.get(id);
+            this.nodeMap.set(id, {rect: previous.rect, link: previous.link, time: previous.time + 1});
+          } else {
+            this.nodeMap.set(id, {rect: d3.select(`#r${id}`), link: d3.select(`#l${id}`), time: 1});
+          }
+          this.drawingPool.next(id);
+        }
       }
     });
     this.drawingPool.pipe(

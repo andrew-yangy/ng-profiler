@@ -1,1 +1,2 @@
-<tree-diagram [treeData]="componentTreeView"></tree-diagram>
+<tree-diagram *ngIf="componentTreeView" [treeData]="componentTreeView"></tree-diagram>
+<h2 *ngIf="!componentTreeView">Angular Profiler is off</h2>
