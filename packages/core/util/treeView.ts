@@ -163,7 +163,7 @@ class TreeView {
       if (args[0] === RenderFlags.Update && lView[HOST]) {
         scheduleOutsideOfZone(() => {
           if (!this.rectMap.has(uuid)) {
-            this.rectMap.set(uuid, lView[HOST].getBoundingClientRect());
+            this.rectMap.set(uuid, lView[HOST]!.getBoundingClientRect());
           }
           CanvasFactory.draw(uuid, this.rectMap.get(uuid));
           postMessage(createMessage(MessageType.UPDATE_TREE, MessageMethod.Response, uuid), '*');
