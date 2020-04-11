@@ -20,7 +20,7 @@ The component tree will show you how angular components are rendered and updated
 
 ### Inspect and change component state
 Select a component in the component tree, then you can see all the states of this component in the `properties` tab.
-You can update the components right away without changing your codes and waiting webpack compiling to see your changes anymore.  
+You can update the components right away without changing your codes and waiting webpack to compile to see your changes anymore.  
 How awesome is that! :sunglasses:
 
 ![](./img/state.png)
