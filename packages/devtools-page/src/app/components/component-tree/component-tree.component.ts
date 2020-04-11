@@ -5,6 +5,7 @@ import { debounceTime, tap } from "rxjs/operators";
 import { COLORS, UPDATE_DEBOUNCE_TIME } from "../../../../../core/constants";
 import { Subject } from "rxjs";
 import * as d3 from 'd3';
+import { SerializedTreeViewItem } from "../../shared/tree-diagram/tree-diagram.component";
 
 @Component({
   selector: 'component-tree',
@@ -12,7 +13,7 @@ import * as d3 from 'd3';
   styleUrls: ['./component-tree.component.css']
 })
 export class ComponentTreeComponent implements OnInit {
-  componentTreeView;
+  componentTreeView: SerializedTreeViewItem;
   drawingPool: Subject<string> = new Subject();
   nodeMap = new Map();
   constructor(private connection: Connection, private zone: NgZone) { }
@@ -22,13 +23,13 @@ export class ComponentTreeComponent implements OnInit {
       method: MessageMethod.Request,
     });
 
-    this.connection.bgConnection.onMessage.addListener((message: Message<string>) => {
+    this.connection.bgConnection.onMessage.addListener((message: Message<SerializedTreeViewItem | string>) => {
       if (message.method !== MessageMethod.Response) return ;
 
       if (message.type === MessageType.COMPONENT_TREE) {
-        this.zone.run(() => this.componentTreeView = message.content);
+        this.zone.run(() => this.componentTreeView = <SerializedTreeViewItem>message.content);
       } else if (message.type === MessageType.UPDATE_TREE) {
-        const id = message.content;
+        const id = <string>message.content;
         if (this.nodeMap.has(id)) {
           const previous = this.nodeMap.get(id);
           this.nodeMap.set(id, {rect: previous.rect, link: previous.link, time: previous.time + 1});

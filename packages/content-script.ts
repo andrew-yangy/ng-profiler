@@ -6,7 +6,7 @@ import { filter } from "rxjs/operators";
 const scriptInjection = new Set<string>();
 
 const inject = (fn: (element: HTMLScriptElement) => void) => {
-  const script = document.createElement('script');
+  const script = document.createElement('script') as HTMLScriptElement;
   fn(script);
   document.documentElement.appendChild(script);
   script.parentNode.removeChild(script);
@@ -28,8 +28,8 @@ const injectScript = (path: string, onLoadHandler?: () => void) => {
 };
 
 const onInjectedScriptLoaded = () => {
-  chrome.storage.local.get('ngProfilerEnabled', ({ngProfilerEnabled}) => {
-    handler[MessageType.TOGGLE_PROFILING]({content: ngProfilerEnabled});
+  chrome.storage.local.get('ngProfilerEnabled', (content) => {
+    handler[MessageType.TOGGLE_PROFILING]({content});
   });
 };
 
