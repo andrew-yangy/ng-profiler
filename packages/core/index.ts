@@ -6,7 +6,6 @@ import { startProfiling, stopProfiling } from "./util/profiling";
 import { TreeViewFactory } from "./util/treeView";
 import { CanvasFactory } from "./util/canvas";
 import { scheduleOutsideOfZone } from "./util/zone";
-import { HOST } from "./angular/interfaces/view";
 
 export interface AngularInfo {
   isIvy: boolean,

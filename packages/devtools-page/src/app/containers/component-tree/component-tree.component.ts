@@ -1,8 +1,8 @@
 import { Component, NgZone, OnInit } from '@angular/core';
-import { Message, MessageMethod, MessageType } from "../../../../../communication/message.type";
+import { Message, MessageMethod, MessageType } from "@communication/message.type";
 import { Connection } from "../../channel/connection";
 import { debounceTime, tap } from "rxjs/operators";
-import { COLORS, UPDATE_DEBOUNCE_TIME } from "../../../../../core/constants";
+import { COLORS, UPDATE_DEBOUNCE_TIME } from "@core/constants";
 import { Subject } from "rxjs";
 import * as d3 from 'd3';
 import { SerializedTreeViewItem } from "./tree-diagram/tree-diagram.component";

@@ -11,17 +11,17 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "baseUrl": "./packages",
-    "outDir": "./dist/"
+    "baseUrl": ".",
+    "outDir": "./dist/",
+    "paths": {
+      "@communication/*": ["packages/communication/*"],
+      "@core/*": ["packages/core/*"],
+      "@devtools-page/*": ["packages/devtools-page/src/app/*"],
+      "@popup/*": ["packages/popup/*"]
+    }
   },
   "exclude": [
     "node_modules",
     "dist"
-  ],
-  "paths": {
-    "@communication/*": ["packages/communication/*"],
-    "@core/*": ["packages/core/*"],
-    "@devtools-page/*": ["packages/devtools-page/*"],
-    "@popup/*": ["packages/popup/*"]
-  }
+  ]
 }
