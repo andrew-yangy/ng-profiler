@@ -13,7 +13,7 @@
     "devtool-page:build:watch": "cd packages/devtools-page && yarn build:watch"
   },
   "author": "Andrew Yang",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "rxjs": "^6.5.4"
   },
