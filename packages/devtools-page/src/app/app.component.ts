@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NodeService } from "./core/node.service";
 
 @Component({
   selector: 'app-root',
@@ -8,7 +7,7 @@ import { NodeService } from "./core/node.service";
 })
 export class AppComponent implements OnInit {
 
-  constructor(public node: NodeService) {}
+  constructor() {}
 
   ngOnInit() {
   }

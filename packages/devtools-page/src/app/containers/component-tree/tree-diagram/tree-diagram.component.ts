@@ -1,6 +1,6 @@
-import { Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
-import { NodeService } from "../../core/node.service";
+import { NodeService } from "../../../core/node.service";
 
 export interface SerializedTreeViewItem {
   id: string;
@@ -14,7 +14,8 @@ export interface SerializedTreeViewItem {
 @Component({
   selector: 'tree-diagram',
   templateUrl: './tree-diagram.component.html',
-  styleUrls: ['./tree-diagram.component.scss']
+  styleUrls: ['./tree-diagram.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TreeDiagramComponent implements OnInit {
   @ViewChild('svgContainer', { static: true }) private svg: ElementRef;

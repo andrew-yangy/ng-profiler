@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TreeDiagramComponent } from './tree-diagram/tree-diagram.component';
 import { SplitPaneComponent } from "./split-pane/split-pane.component";
 import { NzTabsModule } from "ng-zorro-antd/tabs";
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
@@ -10,6 +9,7 @@ import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 const ZORRO_MODULES = [
   NzTabsModule,
@@ -23,7 +23,6 @@ const ZORRO_MODULES = [
 ];
 
 const CUSTOM_COMPONENTS = [
-  TreeDiagramComponent,
   SplitPaneComponent
 ];
 
@@ -33,9 +32,13 @@ const CUSTOM_COMPONENTS = [
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     ...ZORRO_MODULES
   ],
   exports: [
+    FormsModule,
+    ReactiveFormsModule,
     ...CUSTOM_COMPONENTS,
     ...ZORRO_MODULES
   ]

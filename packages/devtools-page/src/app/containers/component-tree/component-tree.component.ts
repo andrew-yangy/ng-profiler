@@ -5,7 +5,8 @@ import { debounceTime, tap } from "rxjs/operators";
 import { COLORS, UPDATE_DEBOUNCE_TIME } from "../../../../../core/constants";
 import { Subject } from "rxjs";
 import * as d3 from 'd3';
-import { SerializedTreeViewItem } from "../../shared/tree-diagram/tree-diagram.component";
+import { SerializedTreeViewItem } from "./tree-diagram/tree-diagram.component";
+import { NodeService } from "../../core/node.service";
 
 @Component({
   selector: 'component-tree',
@@ -16,7 +17,9 @@ export class ComponentTreeComponent implements OnInit {
   componentTreeView: SerializedTreeViewItem | null;
   drawingPool: Subject<string> = new Subject();
   nodeMap = new Map();
-  constructor(private connection: Connection, private zone: NgZone) { }
+
+  constructor(private connection: Connection, public node: NodeService, private zone: NgZone) { }
+
   ngOnInit() {
     // TODO: clean this shit
     this.connection.bgConnection.onMessage.addListener((message: Message<SerializedTreeViewItem | string>) => {

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { MessageMethod, MessageType } from "../../../../../communication/message.type";
-import { Connection } from "../../channel/connection";
+import { Connection } from "../../../channel/connection";
+import { MessageMethod, MessageType } from "../../../../../../communication/message.type";
 
 @Component({
   selector: 'component-info',
