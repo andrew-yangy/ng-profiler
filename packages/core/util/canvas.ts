@@ -1,6 +1,8 @@
 import { Subject } from "rxjs";
 import { debounceTime, tap } from "rxjs/operators";
 import { COLORS, DRAWER_THRESHOLD, UPDATE_DEBOUNCE_TIME } from "../constants";
+import { HOST, LView } from "../angular/interfaces/view";
+import { TreeViewFactory } from "./treeView";
 
 class Canvas {
   canvas: HTMLCanvasElement;
@@ -17,7 +19,7 @@ class Canvas {
   }
   create = () => {
     if (this.canvas) return ;
-    const canvas: HTMLCanvasElement = window.document.createElement('canvas');
+    const canvas = document.createElement('canvas') as HTMLCanvasElement;
     canvas.width = window.screen.availWidth;
     canvas.height = window.screen.availHeight;
     canvas.style.cssText = `
@@ -29,9 +31,23 @@ class Canvas {
         top: 0;
         z-index: 1000000000;
       `;
-    const root = window.document.documentElement;
+    const root = document.documentElement;
     root.insertBefore(canvas, root.firstChild);
     this.canvas = canvas;
+  };
+
+  highlight = (lView: LView) => {
+    if (!lView) return ;
+    const rect: DOMRect = lView[HOST]!?.getBoundingClientRect();
+    const ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.fillStyle = 'rgba(60, 210, 240, 0.3)';
+    ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+    ctx.font = "1rem Arial";
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#343ad7";
+    console.log(rect);
+    ctx.fillText(TreeViewFactory.getComponentName(lView), rect.x + rect.width - 10, rect.y + rect.height - 10);
   };
 
   draw = (uuid: string, rect: DOMRect) => {

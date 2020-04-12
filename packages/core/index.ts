@@ -4,6 +4,9 @@ import { findAngularVersion } from "./angular/util/view_utils";
 import { createMessage } from "../communication/messager";
 import { startProfiling, stopProfiling } from "./util/profiling";
 import { TreeViewFactory } from "./util/treeView";
+import { CanvasFactory } from "./util/canvas";
+import { scheduleOutsideOfZone } from "./util/zone";
+import { HOST } from "./angular/interfaces/view";
 
 export interface AngularInfo {
   isIvy: boolean,
@@ -34,6 +37,14 @@ function handleMessage(e: MessageEvent) {
     content = TreeViewFactory.serialisedTreeView;
   } else if (data.type === MessageType.APPLY_CHANGES) {
     TreeViewFactory.applyChanges(data.content);
+  } else if (data.type === MessageType.HIGHLIGHT_ELEMENT) {
+    scheduleOutsideOfZone(() => {
+      if (data.content) {
+        CanvasFactory.highlight(TreeViewFactory.treeLViewMap.get(data.content));
+      } else {
+        CanvasFactory.clear();
+      }
+    });
   }
 
   postMessage(createMessage(data.type, MessageMethod.Response, content), '*');

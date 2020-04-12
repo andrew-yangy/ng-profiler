@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef, EventEmitter,
+  Input,
+  NgZone,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import * as d3 from 'd3';
 import { NodeService } from "../../../core/node.service";
 
@@ -40,6 +49,8 @@ export class TreeDiagramComponent implements OnInit {
     });
     this.render(this.root);
   };
+  @Output() hoverNode = new EventEmitter();
+
   _treeData; gLink; gNode; root; preSelected; rectW = 150; rectH = 30; rect;
 
   constructor(private nodeService: NodeService, private zone: NgZone) { }
@@ -111,6 +122,8 @@ export class TreeDiagramComponent implements OnInit {
       .attr("fill-opacity", 0)
       .attr("stroke-opacity", 0)
       .style("cursor", "pointer")
+      .on("mouseover", (d) => this.hoverNode.emit(d.data.id))
+      .on("mouseout", () => this.hoverNode.emit())
       .on("click", this.clickNode);
 
     this.rect = nodeEnter.append("rect")

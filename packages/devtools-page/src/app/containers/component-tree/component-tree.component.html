@@ -1,6 +1,6 @@
 <split-pane>
   <ng-container split-pane-primary>
-    <tree-diagram *ngIf="componentTreeView" [treeData]="componentTreeView"></tree-diagram>
+    <tree-diagram *ngIf="componentTreeView" [treeData]="componentTreeView" (hoverNode)="hoverNode($event)"></tree-diagram>
     <h2 *ngIf="!componentTreeView">Angular Profiler is off</h2>
   </ng-container>
   <div split-pane-secondary *ngIf="componentTreeView">

@@ -74,4 +74,9 @@ const handler = {
       createMessage(MessageType.APPLY_CHANGES, MessageMethod.Request, request.content)
     )
   },
+  [MessageType.HIGHLIGHT_ELEMENT]: (request) => {
+    observeMessage<string>(
+      createMessage(MessageType.HIGHLIGHT_ELEMENT, MessageMethod.Request, request.content)
+    )
+  },
 };

@@ -29,7 +29,6 @@ export interface SerializedTreeViewItem {
 
 class TreeView {
   serialisedTreeView: SerializedTreeViewItem;
-  rectMap = new Map<string, DOMRect>();
   treeLViewMap = new Map<string, LView>();
   enabled: boolean;
 
@@ -48,7 +47,7 @@ class TreeView {
     return {
       id: treeViewItem.lView[HOST][NG_PROFILER_ID],
       name: this.getComponentName(treeViewItem.lView),
-      tagName: treeViewItem.lView && treeViewItem.lView[HOST]?.localName,
+      tagName: treeViewItem.lView && treeViewItem.lView[HOST]!?.localName,
       children: treeViewItem.children && treeViewItem.children.map(loopTreeViewItem =>
         this.serialiseTreeViewItem(loopTreeViewItem)
       ),
@@ -59,7 +58,7 @@ class TreeView {
   }
 
   getComponentName = (lView: LView | LContainer) => {
-    return lView[CONTEXT].constructor.name.length > 1 ? lView[CONTEXT].constructor.name : lView[HOST] && lView[HOST]['localName'];
+    return lView[CONTEXT].constructor.name.length > 1 ? lView[CONTEXT].constructor.name : lView[HOST]?.localName;
   };
 
   getContextState = (context) => {
@@ -158,14 +157,11 @@ class TreeView {
     const uuid = lView[HOST] && lView[HOST][NG_PROFILER_ID];
     uuid && this.treeLViewMap.set(uuid, lView);
     tView.template = (...args) => {
-      originTemplate(...args);
+      originTemplate(args[0], args[1]);
       if (!this.enabled) return ;
       if (args[0] === RenderFlags.Update && lView[HOST]) {
         scheduleOutsideOfZone(() => {
-          if (!this.rectMap.has(uuid)) {
-            this.rectMap.set(uuid, lView[HOST]!.getBoundingClientRect());
-          }
-          CanvasFactory.draw(uuid, this.rectMap.get(uuid));
+          CanvasFactory.draw(uuid, this.treeLViewMap.get(uuid)[HOST]!?.getBoundingClientRect());
           postMessage(createMessage(MessageType.UPDATE_TREE, MessageMethod.Response, uuid), '*');
         })
       }

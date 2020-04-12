@@ -56,6 +56,13 @@ export class ComponentTreeComponent implements OnInit {
       this.resetRect();
     })
   }
+  hoverNode = (id: string) => {
+    this.connection.bgConnection.postMessage({
+      type: MessageType.HIGHLIGHT_ELEMENT,
+      method: MessageMethod.Request,
+      content: id
+    });
+  };
 
   updateRect = (id: string) => {
     const node = this.nodeMap.get(id);
