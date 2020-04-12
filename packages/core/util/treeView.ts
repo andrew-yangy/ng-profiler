@@ -58,7 +58,7 @@ class TreeView {
   }
 
   getComponentName = (lView: LView | LContainer) => {
-    return lView[CONTEXT].constructor.name.length > 1 ? lView[CONTEXT].constructor.name : lView[HOST]?.localName;
+    return lView[CONTEXT].constructor.name.length > 1 ? lView[CONTEXT].constructor.name : lView[HOST] && lView[HOST]['localName'];
   };
 
   getContextState = (context) => {

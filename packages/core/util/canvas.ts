@@ -46,7 +46,6 @@ class Canvas {
     ctx.font = "1rem Arial";
     ctx.textAlign = "right";
     ctx.fillStyle = "#343ad7";
-    console.log(rect);
     ctx.fillText(TreeViewFactory.getComponentName(lView), rect.x + rect.width - 10, rect.y + rect.height - 10);
   };
 
