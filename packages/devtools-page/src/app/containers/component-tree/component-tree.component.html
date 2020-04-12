@@ -3,7 +3,7 @@
     <tree-diagram *ngIf="componentTreeView" [treeData]="componentTreeView"></tree-diagram>
     <h2 *ngIf="!componentTreeView">Angular Profiler is off</h2>
   </ng-container>
-  <div split-pane-secondary>
+  <div split-pane-secondary *ngIf="componentTreeView">
     <ng-container *ngIf="node.nodeData | async as nodeData; else noData">
       <component-info [node]="nodeData"></component-info>
     </ng-container>
