@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "name": "Angular Profiler",
   "short_name": "ng profiler",
   "description": "Angular Profiler is a developer tool to power-up Angular development workflow by providing a series of debugging tools.",

@@ -63,7 +63,7 @@ class TreeView {
 
   getContextState = (context) => {
     return Object.keys(context).reduce((acc, key) => {
-      if (typeof context[key] !== 'object'
+      if (typeof context[key] !== 'object' && typeof context[key] !== 'function'
         // TODO: handle object
         // || context[key] && Object.getPrototypeOf(context[key]).isPrototypeOf(Object)
       ) {
