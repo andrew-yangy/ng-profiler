@@ -3,6 +3,7 @@ import { debounceTime, tap } from "rxjs/operators";
 import { COLORS, DRAWER_THRESHOLD, UPDATE_DEBOUNCE_TIME } from "../constants";
 import { HOST, LView } from "../angular/interfaces/view";
 import { TreeViewFactory } from "./treeView";
+import { scheduleOutsideOfZone } from "./zone";
 
 class Canvas {
   canvas: HTMLCanvasElement;
@@ -10,12 +11,14 @@ class Canvas {
   hostMap = new Map<string, number>();
 
   constructor() {
-    this.drawingPool.pipe(
-      tap(this.drawborder),
-      debounceTime(UPDATE_DEBOUNCE_TIME)
-    ).subscribe(() => {
-      this.clear();
-    })
+    scheduleOutsideOfZone(() => {
+      this.drawingPool.pipe(
+        tap(this.drawborder),
+        debounceTime(UPDATE_DEBOUNCE_TIME)
+      ).subscribe(() => {
+        this.clear();
+      })
+    });
   }
   create = () => {
     if (this.canvas) return ;

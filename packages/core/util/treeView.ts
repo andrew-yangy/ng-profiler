@@ -161,8 +161,12 @@ class TreeView {
       if (!this.enabled) return ;
       if (args[0] === RenderFlags.Update && lView[HOST]) {
         scheduleOutsideOfZone(() => {
-          CanvasFactory.draw(uuid, this.treeLViewMap.get(uuid)[HOST]!?.getBoundingClientRect());
-          postMessage(createMessage(MessageType.UPDATE_TREE, MessageMethod.Response, uuid), '*');
+          try {
+            CanvasFactory.draw(uuid, this.treeLViewMap.get(uuid)[HOST]!?.getBoundingClientRect());
+            postMessage(createMessage(MessageType.UPDATE_TREE, MessageMethod.Response, uuid), '*');
+          } catch (e) {
+            console.log(e);
+          }
         })
       }
     }

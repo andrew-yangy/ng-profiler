@@ -2,16 +2,16 @@ import { Message, MessageMethod, MessageType } from "../communication/message.ty
 import { AngularInfo } from "../core";
 
 function onDOMContentLoaded() {
-  const traceSwitcherCbx = document.getElementById('traceSwitcherCbx');
+  const enableCheckBox = document.getElementById('enable');
   const descrElem = document.getElementById('description');
   const errorElem = document.getElementById('error');
-  const switcherElem = document.getElementById('switcher');
+  const enableSwitch = document.getElementById('enableSwitch');
 
   chrome.storage.local.get('ngProfilerEnabled', (content) => {
-    (traceSwitcherCbx as HTMLInputElement).checked = !!content.ngProfilerEnabled;
+    (enableCheckBox as HTMLInputElement).checked = !!content.ngProfilerEnabled;
   });
 
-  traceSwitcherCbx.addEventListener('change', e => {
+  enableCheckBox.addEventListener('change', e => {
     const enabled = (e.target as HTMLInputElement).checked;
     chrome.storage.local.set({ngProfilerEnabled: enabled});
     chrome.browserAction.setIcon({
@@ -54,7 +54,7 @@ function onDOMContentLoaded() {
     function (request: Message<AngularInfo>) {
       if (request.type === MessageType.IS_IVY) {
         if (!request.content.isIvy) {
-          switcherElem.style.display = 'none';
+          enableSwitch.style.display = 'none';
           errorElem.innerText = `This page doesn't appear to be using IVY.`;
         } else {
           descrElem.innerText = `Found Angular on version ${request.content.version}`;

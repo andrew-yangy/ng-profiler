@@ -4,69 +4,8 @@
         min-height: 60px;
         width: 310px;
         font-family: 'Segoe UI', 'Lucida Grande', Tahoma, sans-serif;
-        font-size: 14px;
+        font-size: 16px;
         padding: 16px;
-    }
-
-    h4 {
-        margin-bottom: 8px;
-    }
-
-    .switch-label {
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-    }
-
-    .switch {
-        position: relative;
-        display: inline-block;
-        top: 2px;
-        width: 46px;
-        height: 20px;
-        margin-left: 5px;
-    }
-
-    .switch input {
-        display: none;
-    }
-
-    .slider {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        border-radius: 30px;
-        cursor: pointer;
-        background-color: #ccc;
-    }
-
-    .slider:before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 4px;
-        transform: translateY(-50%);
-        width: 18px;
-        height: 18px;
-        background-color: #fff;
-        border-radius: 50%;
-    }
-
-    input:checked + .slider {
-        background-color: #66bb6a;
-    }
-
-    input:checked + .slider:before {
-        transform: translate(20px, -50%);
-    }
-
-    .actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 13px;
     }
 
     #description {
@@ -84,17 +23,86 @@
     #error:empty {
         display: none;
     }
+    .inputGroup {
+      background-color: #fff;
+      display: block;
+      margin: 10px 0;
+      position: relative;
+      line-height: 36px;
+    }
+    .inputGroup label {
+      padding: 12px 30px;
+      display: block;
+      text-align: left;
+      color: #3c454c;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      transition: color 200ms ease-in;
+      overflow: hidden;
+    }
+    .inputGroup label:before {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      content: '';
+      background-color: #5562eb;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale3d(1, 1, 1);
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      z-index: -1;
+    }
+    .inputGroup label:after {
+      width: 32px;
+      height: 32px;
+      content: '';
+      border: 2px solid #d1d7dc;
+      background-color: #fff;
+      background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E ");
+      background-repeat: no-repeat;
+      background-position: 2px 3px;
+      border-radius: 50%;
+      z-index: 2;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      transition: all 200ms ease-in;
+    }
+    .inputGroup input:checked ~ label {
+      color: #fff;
+    }
+    .inputGroup input:checked ~ label:before {
+      transform: translate(-50%, -50%) scale3d(56, 56, 1);
+      opacity: 1;
+    }
+    .inputGroup input:checked ~ label:after {
+      background-color: #54e0c7;
+      border-color: #54e0c7;
+    }
+    .inputGroup input {
+      width: 32px;
+      height: 32px;
+      order: 1;
+      z-index: 2;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      visibility: hidden;
+    }
+
 </style>
 <h4>Angular Profiler</h4>
 <p id="description"></p>
-<div class="actions">
-  <label class="switch-label" id="switcher">
-      Enable Profiler
-    <span class="switch">
-      <input type="checkbox" id="traceSwitcherCbx"/>
-      <span class="slider"></span>
-    </span>
-  </label>
+<div class="inputGroup enableSwitch">
+  <input id="enable" name="enable" type="checkbox"/>
+  <label for="enable">Enable Profiler</label>
 </div>
 <div id="error"></div>
 
