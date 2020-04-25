@@ -3,20 +3,27 @@ import { getRootView } from "../angular/util/view_traversal_utils";
 import { CONTEXT, RootContext } from "../angular/interfaces/view";
 import { readPatchedLView } from "../angular/util/view_utils";
 import { CanvasFactory } from "./canvas";
-import { TreeViewFactory } from "./treeView";
+import { SerializedTreeViewItem, TreeViewFactory } from "./treeView";
 
 export const startProfiling = () => {
-  const view = findLView();
-  const root = getRootView(view);
-  const rootComponent = (root[CONTEXT] as RootContext).components[0];
-  const rootComponentLView = readPatchedLView(rootComponent);
-
   CanvasFactory.create();
 
   TreeViewFactory.enable();
-  TreeViewFactory.attachComponent(rootComponentLView, TreeViewFactory.setView)
+
+  patchComponentTree();
 };
 
 export const stopProfiling = () => {
   TreeViewFactory.disable();
+};
+
+export const patchComponentTree = (generateSerialisedTreeView?: (serialisedTreeView: SerializedTreeViewItem) => void) => {
+  const view = findLView();
+  const root = getRootView(view);
+  const rootComponent = (root[CONTEXT] as RootContext).components[0];
+  const rootComponentLView = readPatchedLView(rootComponent);
+  TreeViewFactory.attachComponent(rootComponentLView, (treeView) => {
+    TreeViewFactory.setView(treeView);
+    generateSerialisedTreeView && generateSerialisedTreeView(TreeViewFactory.serialisedTreeView);
+  });
 };

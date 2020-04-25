@@ -2,7 +2,7 @@ import { Message, MESSAGE_SOURCE, MessageMethod, MessageType } from "../communic
 import { findLView } from "./angular/render3/context_discovery";
 import { findAngularVersion } from "./angular/util/view_utils";
 import { createMessage } from "../communication/messager";
-import { startProfiling, stopProfiling } from "./util/profiling";
+import { patchComponentTree, startProfiling, stopProfiling } from "./util/profiling";
 import { TreeViewFactory } from "./util/treeView";
 import { CanvasFactory } from "./util/canvas";
 import { scheduleOutsideOfZone } from "./util/zone";
@@ -60,3 +60,20 @@ function handleMessage(e: MessageEvent) {
 }
 
 window.addEventListener('message', handleMessage);
+
+const listener = (type: string) => {
+  const origin = history[type];
+  return function () {
+    console.log(arguments);
+    setTimeout(() => {
+      patchComponentTree((serialisedTreeView) => {
+        postMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, serialisedTreeView), '*');
+      });
+    });
+
+    return origin.apply(this, arguments)
+  }
+};
+
+window.history.pushState = listener('pushState');
+window.history.replaceState = listener('replaceState');

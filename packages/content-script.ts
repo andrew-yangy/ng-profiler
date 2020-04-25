@@ -2,6 +2,7 @@ import { Message, MessageMethod, MessageType } from "./communication/message.typ
 import { createMessage, observeMessage, observeResponse } from "./communication/messager";
 import { AngularInfo } from "./core";
 import { filter } from "rxjs/operators";
+import { SerializedTreeViewItem } from "@core/util/treeView";
 
 const scriptInjection = new Set<string>();
 
@@ -52,6 +53,10 @@ observeResponse<string>(MessageType.UPDATE_TREE).pipe(filter(id => !!id)).subscr
   chrome.runtime.sendMessage(createMessage<string>(MessageType.UPDATE_TREE, MessageMethod.Response, componentId))
 });
 
+observeResponse<SerializedTreeViewItem>(MessageType.COMPONENT_TREE).subscribe(tree => {
+  chrome.runtime.sendMessage(createMessage<SerializedTreeViewItem>(MessageType.COMPONENT_TREE, MessageMethod.Response, tree))
+});
+
 const handler = {
   [MessageType.IS_IVY]: () => {
     observeMessage<AngularInfo>(
@@ -69,7 +74,7 @@ const handler = {
     chrome.runtime.sendMessage(createMessage<boolean>(MessageType.TOGGLE_PROFILING, MessageMethod.Request, request.content));
   },
   [MessageType.COMPONENT_TREE]: () => {
-    observeMessage<boolean>(
+    observeMessage<SerializedTreeViewItem>(
       createMessage(MessageType.COMPONENT_TREE, MessageMethod.Request)
     ).subscribe(tree => {
       chrome.runtime.sendMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, tree))
