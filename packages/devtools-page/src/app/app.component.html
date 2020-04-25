@@ -1,5 +1,10 @@
-<nz-tabset [nzTabBarStyle]="{'margin': 0}" [nzType]="'card'">
+<nz-tabset [nzTabBarStyle]="{'margin': 0}" [nzType]="'card'" [nzTabBarExtraContent]="extraTemplate">
   <nz-tab nzTitle="Component Tree">
     <component-tree></component-tree>
   </nz-tab>
 </nz-tabset>
+
+<ng-template #extraTemplate>
+  <label nz-checkbox [ngModel]="highlightView" (ngModelChange)="updateHighlightView($event)">Highlight View</label>
+  <label nz-checkbox [ngModel]="highlightTree" (ngModelChange)="updateHighlightTree($event)">Highlight Tree</label>
+</ng-template>

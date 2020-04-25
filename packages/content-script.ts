@@ -31,6 +31,12 @@ const onInjectedScriptLoaded = () => {
   chrome.storage.local.get('ngProfilerEnabled', (data) => {
     handler[MessageType.TOGGLE_PROFILING]({content: data.ngProfilerEnabled});
   });
+  chrome.storage.local.get(MessageType.HIGHLIGHT_VIEW, (storage) => {
+    handler[MessageType.HIGHLIGHT_VIEW]({content: storage[MessageType.HIGHLIGHT_VIEW]})
+  });
+  chrome.storage.local.get(MessageType.HIGHLIGHT_TREE, (storage) => {
+    handler[MessageType.HIGHLIGHT_TREE]({content: storage[MessageType.HIGHLIGHT_TREE]})
+  });
 };
 
 injectScript('core.bundle.js', onInjectedScriptLoaded);
@@ -78,5 +84,21 @@ const handler = {
     observeMessage<string>(
       createMessage(MessageType.HIGHLIGHT_ELEMENT, MessageMethod.Request, request.content)
     )
+  },
+  [MessageType.HIGHLIGHT_VIEW]: (request) => {
+    request.content !== undefined && chrome.storage.local.set({[MessageType.HIGHLIGHT_VIEW]: request.content});
+    observeMessage<boolean | null>(
+      createMessage(MessageType.HIGHLIGHT_VIEW, MessageMethod.Request, request.content)
+    ).subscribe(status => {
+      chrome.runtime.sendMessage(createMessage(MessageType.HIGHLIGHT_VIEW, MessageMethod.Response, status));
+    });
+  },
+  [MessageType.HIGHLIGHT_TREE]: (request) => {
+    request.content !== undefined && chrome.storage.local.set({[MessageType.HIGHLIGHT_TREE]: request.content});
+    observeMessage<boolean | null>(
+      createMessage(MessageType.HIGHLIGHT_TREE, MessageMethod.Request, request.content)
+    ).subscribe(status => {
+      chrome.runtime.sendMessage(createMessage(MessageType.HIGHLIGHT_TREE, MessageMethod.Response, status));
+    });
   },
 };

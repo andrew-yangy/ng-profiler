@@ -31,6 +31,24 @@ class TreeView {
   serialisedTreeView: SerializedTreeViewItem;
   treeLViewMap = new Map<string, LView>();
   enabled: boolean;
+  _highlightView: boolean;
+  _highlightTree: boolean;
+
+  get highlightView() {
+    return this._highlightView;
+  }
+
+  set highlightView(status: boolean) {
+    this._highlightView = status;
+  }
+
+  get highlightTree() {
+    return this._highlightTree;
+  }
+
+  set highlightTree(status: boolean) {
+    this._highlightTree = status;
+  }
 
   enable = () => this.enabled = true;
   disable = () => this.enabled = false;
@@ -162,8 +180,8 @@ class TreeView {
       if (args[0] === RenderFlags.Update && lView[HOST]) {
         scheduleOutsideOfZone(() => {
           try {
-            CanvasFactory.draw(uuid, this.treeLViewMap.get(uuid)[HOST]!?.getBoundingClientRect());
-            postMessage(createMessage(MessageType.UPDATE_TREE, MessageMethod.Response, uuid), '*');
+            this.highlightView && CanvasFactory.draw(uuid, this.treeLViewMap.get(uuid)[HOST]!?.getBoundingClientRect());
+            this.highlightTree && postMessage(createMessage(MessageType.UPDATE_TREE, MessageMethod.Response, uuid), '*');
           } catch (e) {
             console.log(e);
           }

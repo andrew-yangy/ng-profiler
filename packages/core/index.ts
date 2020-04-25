@@ -44,6 +44,16 @@ function handleMessage(e: MessageEvent) {
         CanvasFactory.clear();
       }
     });
+  } else if (data.type === MessageType.HIGHLIGHT_VIEW) {
+    if (data.content !== undefined) {
+      TreeViewFactory.highlightView = data.content;
+    }
+    content = TreeViewFactory.highlightView;
+  } else if (data.type === MessageType.HIGHLIGHT_TREE) {
+    if (data.content !== undefined) {
+      TreeViewFactory.highlightTree = data.content;
+    }
+    content = TreeViewFactory.highlightTree;
   }
 
   postMessage(createMessage(data.type, MessageMethod.Response, content), '*');
