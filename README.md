@@ -2,6 +2,8 @@
 
 Angular Profiler is a developer tool to power-up Angular development workflow by providing a series of debugging tools.
 
+It can be used as [Chrome Extension](https://chrome.google.com/webstore/detail/angular-profiler/ikkobdhhnnllhcmjaealbihjkahnegia)
+
 ![](images/ng-profiler.gif)
 
 ## How it can help us having a better developing experience && building a faster application
@@ -25,7 +27,6 @@ How awesome is that! :sunglasses:
 
 ![](images/state.png)
 
-> The Chrome extension is still under review, in the meanwhile, you can:
 ### Try it locally
 
 ```bash
