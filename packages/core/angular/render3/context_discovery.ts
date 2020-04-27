@@ -13,7 +13,7 @@ export function isProvidereInstance(instance: any): boolean {
   return instance && instance.constructor && instance.constructor.ɵprov;
 }
 
-export function findLView(target: HTMLElement | ChildNode | Node = document.body): LView|null {
+export function findLView(target: HTMLElement | ChildNode | Node): LView|null {
   if (!target || !target.childNodes) {
     return;
   }

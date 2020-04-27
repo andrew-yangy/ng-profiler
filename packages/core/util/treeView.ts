@@ -1,4 +1,15 @@
-import { CHILD_HEAD, CONTEXT, FLAGS, HOST, LView, LViewFlags, NEXT, PARENT, TVIEW } from "../angular/interfaces/view";
+import {
+  CHILD_HEAD,
+  CONTEXT,
+  FLAGS,
+  HOST,
+  LView,
+  LViewFlags,
+  NEXT,
+  PARENT,
+  RENDERER_FACTORY,
+  TVIEW
+} from "../angular/interfaces/view";
 import { RenderFlags } from "../angular/interfaces/definition";
 import { scheduleOutsideOfZone } from "./zone";
 import { CanvasFactory } from "./canvas";
@@ -9,6 +20,8 @@ import { createMessage } from "../../communication/messager";
 import { MessageMethod, MessageType } from "../../communication/message.type";
 import { generate } from "shortid";
 import { NG_PROFILER_ID } from "../constants";
+import { findLView } from "../angular/render3/context_discovery";
+
 declare const ng;
 
 export interface TreeViewItem {
@@ -31,8 +44,9 @@ class TreeView {
   serialisedTreeView: SerializedTreeViewItem;
   treeLViewMap = new Map<string, LView>();
   enabled: boolean;
-  _highlightView: boolean;
-  _highlightTree: boolean;
+  private _highlightView: boolean;
+  private _highlightTree: boolean;
+  private _bodyLView: LView;
 
   get highlightView() {
     return this._highlightView;
@@ -50,12 +64,23 @@ class TreeView {
     this._highlightTree = status;
   }
 
+  get bodyLView() {
+    if (!this._bodyLView) {
+      this.bodyLView = findLView(document.body);
+    }
+    return this._bodyLView;
+  };
+
+  set bodyLView(view: LView) {
+    this._bodyLView = view;
+  }
+
   enable = () => this.enabled = true;
   disable = () => this.enabled = false;
 
   setView = (treeView: TreeViewItem) => {
     this.serialisedTreeView = this.serialiseTreeViewItem(treeView.children[0]);
-    console.log(this.serialisedTreeView);
+    console.log(treeView, this.serialisedTreeView);
   };
 
   serialiseTreeViewItem(
@@ -114,6 +139,17 @@ class TreeView {
 
   attachComponent = (componentView: LView, addElement: (treeView: TreeViewItem) => void) => {
     const componentTView = componentView[TVIEW];
+    const renderer = componentView[RENDERER_FACTORY];
+    const oriBegin = renderer.begin;
+    const oriEnd = renderer.end;
+    renderer.begin = function() {
+      oriBegin.apply(this);
+      // console.log(componentView[HOST], 'begin');
+    };
+    renderer.end = function () {
+      oriEnd.apply(this);
+      // console.log(componentView[HOST], 'end');
+    };
     const treeView = {
       lView: componentView,
       children: []

@@ -2,7 +2,7 @@ import { LContext, MONKEY_PATCH_KEY_NAME } from "../interfaces/context";
 import { CHILD_HEAD, HOST, LView } from "../interfaces/view";
 import { isLView } from "../interfaces/type_checks";
 
-export function readPatchedData(target: any): LView|LContext|null {
+export function readPatchedData(target: any = {}): LView|LContext|null {
   return target[MONKEY_PATCH_KEY_NAME] || null;
 }
 

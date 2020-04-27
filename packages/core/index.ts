@@ -1,5 +1,4 @@
 import { Message, MESSAGE_SOURCE, MessageMethod, MessageType } from "../communication/message.type";
-import { findLView } from "./angular/render3/context_discovery";
 import { findAngularVersion } from "./angular/util/view_utils";
 import { createMessage } from "../communication/messager";
 import { patchComponentTree, startProfiling, stopProfiling } from "./util/profiling";
@@ -24,7 +23,7 @@ function handleMessage(e: MessageEvent) {
   }
 
   let content: AngularInfo | any;
-  const view = findLView();
+  const view = TreeViewFactory.bodyLView;
   if (data.type === MessageType.IS_IVY) {
     content = {
       isIvy: !!view,
@@ -64,13 +63,13 @@ window.addEventListener('message', handleMessage);
 const listener = (type: string) => {
   const origin = history[type];
   return function () {
-    console.log(arguments);
-    setTimeout(() => {
-      patchComponentTree((serialisedTreeView) => {
-        postMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, serialisedTreeView), '*');
+    if (TreeViewFactory.bodyLView && TreeViewFactory.enabled) {
+      setTimeout(() => {
+        patchComponentTree((serialisedTreeView) => {
+          postMessage(createMessage(MessageType.COMPONENT_TREE, MessageMethod.Response, serialisedTreeView), '*');
+        });
       });
-    });
-
+    }
     return origin.apply(this, arguments)
   }
 };

@@ -1,4 +1,3 @@
-import { findLView } from "../angular/render3/context_discovery";
 import { getRootView } from "../angular/util/view_traversal_utils";
 import { CONTEXT, RootContext } from "../angular/interfaces/view";
 import { readPatchedLView } from "../angular/util/view_utils";
@@ -18,7 +17,7 @@ export const stopProfiling = () => {
 };
 
 export const patchComponentTree = (generateSerialisedTreeView?: (serialisedTreeView: SerializedTreeViewItem) => void) => {
-  const view = findLView();
+  const view = TreeViewFactory.bodyLView;
   const root = getRootView(view);
   const rootComponent = (root[CONTEXT] as RootContext).components[0];
   const rootComponentLView = readPatchedLView(rootComponent);
