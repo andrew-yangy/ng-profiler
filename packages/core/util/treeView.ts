@@ -139,17 +139,6 @@ class TreeView {
 
   attachComponent = (componentView: LView, addElement: (treeView: TreeViewItem) => void) => {
     const componentTView = componentView[TVIEW];
-    const renderer = componentView[RENDERER_FACTORY];
-    const oriBegin = renderer.begin;
-    const oriEnd = renderer.end;
-    renderer.begin = function() {
-      oriBegin.apply(this);
-      // console.log(componentView[HOST], 'begin');
-    };
-    renderer.end = function () {
-      oriEnd.apply(this);
-      // console.log(componentView[HOST], 'end');
-    };
     const treeView = {
       lView: componentView,
       children: []
@@ -183,9 +172,9 @@ class TreeView {
 
         for (let i = CONTAINER_HEADER_OFFSET; i < viewOrContainer.length; i++) {
           const embeddedLView = viewOrContainer[i] as LView;
-          const embeddedTView = embeddedLView[TVIEW];
+          const embeddedTView = embeddedLView?.[TVIEW];
 
-          embeddedTView.components && this.attachComponent(embeddedLView, (element) => {
+          embeddedTView?.components && this.attachComponent(embeddedLView, (element) => {
             children = [...children, ...element.children]
           });
         }
@@ -203,13 +192,19 @@ class TreeView {
 
   private attachTemplate = (lView: LView) => {
     const tView = lView[TVIEW];
+    let uuid;
     if (lView[HOST] && !lView[HOST][NG_PROFILER_ID]) {
-      lView[HOST][NG_PROFILER_ID] = generate();
+      uuid = generate();
+      lView[HOST][NG_PROFILER_ID] = uuid;
+      this.treeLViewMap.set(uuid, lView);
+      this.profilingTemplate(lView, (start, end) => {
+        console.log(lView, start, end, end - start);
+      });
     }
+
     const originTemplate = tView.template;
     if (!originTemplate) return ;
-    const uuid = lView[HOST] && lView[HOST][NG_PROFILER_ID];
-    uuid && this.treeLViewMap.set(uuid, lView);
+
     tView.template = (...args) => {
       originTemplate(args[0], args[1]);
       if (!this.enabled) return ;
@@ -226,5 +221,21 @@ class TreeView {
     }
   };
 
+  private profilingTemplate(componentView: LView, record: (start: number, end: number) => void) {
+    const renderer = componentView[RENDERER_FACTORY];
+    const oriBegin = renderer.begin;
+    const oriEnd = renderer.end;
+
+    let start, end;
+    renderer.begin = function() {
+      oriBegin.apply(this);
+      start = performance.now();
+    };
+    renderer.end = function () {
+      oriEnd.apply(this);
+      end = performance.now();
+      record(start, end);
+    };
+  }
 }
 export const TreeViewFactory = new TreeView();

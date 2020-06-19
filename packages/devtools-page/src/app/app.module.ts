@@ -8,6 +8,7 @@ import { NZ_ICONS } from "ng-zorro-antd";
 import { IconDefinition } from '@ant-design/icons-angular';
 import { ZoomInOutline, ZoomOutOutline } from '@ant-design/icons-angular/icons';
 import { ComponentTreeModule } from "./containers/component-tree/component-tree.module";
+import { PerformanceModule } from "./containers/performance/performance.module";
 const icons: IconDefinition[] = [ ZoomInOutline, ZoomOutOutline ];
 
 @NgModule({
@@ -18,7 +19,8 @@ const icons: IconDefinition[] = [ ZoomInOutline, ZoomOutOutline ];
     BrowserModule,
     BrowserAnimationsModule,
     SharedModule,
-    ComponentTreeModule
+    ComponentTreeModule,
+    PerformanceModule
   ],
   providers: [{ provide: NZ_ICONS, useValue: icons }],
   bootstrap: [AppComponent]

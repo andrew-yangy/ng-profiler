@@ -15,6 +15,7 @@
   "author": "Andrew Yang",
   "license": "MIT",
   "dependencies": {
+    "d3-timelines": "^1.3.1",
     "rxjs": "^6.5.4"
   },
   "devDependencies": {
