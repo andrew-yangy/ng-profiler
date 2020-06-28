@@ -1,10 +1,10 @@
 <split-pane>
   <ng-container split-pane-primary>
-    <tree-diagram *ngIf="componentTreeView" [treeData]="componentTreeView" (hoverNode)="hoverNode($event)"></tree-diagram>
-    <h2 *ngIf="!componentTreeView">Angular Profiler is off</h2>
+    <tree-diagram *ngIf="viewService.componentTreeView | async as treeView" [treeData]="treeView" (hoverNode)="hoverNode($event)"></tree-diagram>
+    <h2 *ngIf="!(viewService.componentTreeView | async)">Angular Profiler is off</h2>
   </ng-container>
-  <div split-pane-secondary *ngIf="componentTreeView">
-    <ng-container *ngIf="node.nodeData | async as nodeData; else noData">
+  <div split-pane-secondary *ngIf="viewService.componentTreeView | async">
+    <ng-container *ngIf="viewService.nodeData | async as nodeData; else noData">
       <component-info [node]="nodeData"></component-info>
     </ng-container>
     <ng-template #noData>No component selected</ng-template>

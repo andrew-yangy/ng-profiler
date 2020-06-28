@@ -9,7 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import * as d3 from 'd3';
-import { NodeService } from "../../../core/node.service";
+import { ViewService } from "../../../core/view.service";
 
 export interface SerializedTreeViewItem {
   id: string;
@@ -44,7 +44,7 @@ export class TreeDiagramComponent implements OnInit {
       d.index = i;
       d._children = d.children;
       if (this.preSelected?.index === i ) {
-        this.zone.run(() => this.nodeService.selectNode(d));
+        this.zone.run(() => this.viewService.selectNode(d));
       }
     });
     this.render(this.root);
@@ -53,7 +53,7 @@ export class TreeDiagramComponent implements OnInit {
 
   _treeData; gLink; gNode; root; preSelected; rectW = 150; rectH = 30; rect;
 
-  constructor(private nodeService: NodeService, private zone: NgZone) { }
+  constructor(private viewService: ViewService, private zone: NgZone) { }
 
   ngOnInit(): void {
     if (!this.gLink || !this.gNode) {
@@ -197,7 +197,7 @@ export class TreeDiagramComponent implements OnInit {
   clickNode = (d) => {
     d.children = d.children ? null : d._children;
     this.render(d);
-    this.zone.run(() => this.nodeService.selectNode(d));
+    this.zone.run(() => this.viewService.selectNode(d));
     this.preSelected?.selected?.style("fill", (d) => d._children ? "lightsteelblue" : "#fff");
     const selected = d3.select(`#r${d.id}`);
     selected.style('fill', () => 'lightgray');

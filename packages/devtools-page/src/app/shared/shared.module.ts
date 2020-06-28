@@ -11,6 +11,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NzCheckboxModule } from "ng-zorro-antd/checkbox";
+import { NzTableModule } from "ng-zorro-antd";
 
 const ZORRO_MODULES = [
   NzTabsModule,
@@ -21,7 +22,8 @@ const ZORRO_MODULES = [
   NzInputNumberModule,
   NzButtonModule,
   NzIconModule,
-  NzCheckboxModule
+  NzCheckboxModule,
+  NzTableModule
 ];
 
 const CUSTOM_COMPONENTS = [

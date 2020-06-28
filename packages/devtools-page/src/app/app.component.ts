@@ -1,6 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { Message, MessageMethod, MessageType } from "@communication/message.type";
 import { Connection } from "@devtools-page/channel/connection";
+import { ViewProfile } from "@core/util/treeView";
 
 @Component({
   selector: 'app-root',
@@ -15,14 +16,16 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     // TODO: clean this shit
-    this.connection.bgConnection.onMessage.addListener((message: Message<boolean>) => {
+    this.connection.bgConnection.onMessage.addListener((message: Message<boolean | ViewProfile>) => {
       if (message.method === MessageMethod.Response) {
-        console.log(message);
         if (message.type === MessageType.HIGHLIGHT_VIEW) {
-          this.zone.run(() => {this.highlightView = message.content});
+          this.zone.run(() => {this.highlightView = message.content as boolean});
         }
         if (message.type === MessageType.HIGHLIGHT_TREE) {
-          this.zone.run(() => {this.highlightTree = message.content});
+          this.zone.run(() => {this.highlightTree = message.content as boolean});
+        }
+        if (message.type === MessageType.VIEW_PROFILES) {
+          // this.profile.addProfile(message.content as ViewProfile);
         }
       }
     })

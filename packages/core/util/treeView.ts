@@ -40,6 +40,12 @@ export interface SerializedTreeViewItem {
   context: any;
 }
 
+export interface ViewProfile {
+  id: string;
+  start: number;
+  end: number;
+}
+
 class TreeView {
   serialisedTreeView: SerializedTreeViewItem;
   treeLViewMap = new Map<string, LView>();
@@ -198,7 +204,15 @@ class TreeView {
       lView[HOST][NG_PROFILER_ID] = uuid;
       this.treeLViewMap.set(uuid, lView);
       this.profilingTemplate(lView, (start, end) => {
-        console.log(lView, start, end, end - start);
+        scheduleOutsideOfZone(() => {
+          try {
+            console.log(start);
+            postMessage(createMessage<ViewProfile>(MessageType.VIEW_PROFILES, MessageMethod.Response, {id: uuid, start, end}), '*');
+          } catch (e) {
+            console.log(e);
+          }
+        })
+        // console.log(lView, start, end, end - start);
       });
     }
 

@@ -6,7 +6,7 @@ import { COLORS, UPDATE_DEBOUNCE_TIME } from "@core/constants";
 import { Subject } from "rxjs";
 import * as d3 from 'd3';
 import { SerializedTreeViewItem } from "./tree-diagram/tree-diagram.component";
-import { NodeService } from "../../core/node.service";
+import { ViewService } from "../../core/view.service";
 
 @Component({
   selector: 'component-tree',
@@ -14,11 +14,10 @@ import { NodeService } from "../../core/node.service";
   styleUrls: ['./component-tree.component.css']
 })
 export class ComponentTreeComponent implements OnInit {
-  componentTreeView: SerializedTreeViewItem | null;
   drawingPool: Subject<string> = new Subject();
   nodeMap = new Map();
 
-  constructor(private connection: Connection, public node: NodeService, private zone: NgZone) { }
+  constructor(private connection: Connection, public viewService: ViewService, private zone: NgZone) { }
 
   ngOnInit() {
     // TODO: clean this shit
@@ -31,12 +30,12 @@ export class ComponentTreeComponent implements OnInit {
               method: MessageMethod.Request,
             });
           } else {
-            this.zone.run(() => {this.componentTreeView = null});
+            this.viewService.updateTreeView(null);
           }
         }
       } else {
         if (message.type === MessageType.COMPONENT_TREE) {
-          this.zone.run(() => this.componentTreeView = <SerializedTreeViewItem>message.content);
+          this.viewService.updateTreeView(<SerializedTreeViewItem>message.content);
         } else if (message.type === MessageType.UPDATE_TREE) {
           const id = <string>message.content;
           if (this.nodeMap.has(id)) {
