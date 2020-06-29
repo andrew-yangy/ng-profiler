@@ -1,4 +1,4 @@
-<nz-table #basicTable [nzData]="(viewService.componentTreeView | async)?.children">
+<nz-table #basicTable nzSize="small" [nzData]="(viewService.componentTreeView | async)?.children">
   <thead>
   <tr>
     <th>Id</th>

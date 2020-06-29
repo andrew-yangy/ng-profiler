@@ -1,11 +1,10 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { Message, MessageMethod, MessageType } from "@communication/message.type";
+import { Component, OnInit } from '@angular/core';
+import { MessageMethod, MessageType } from "@communication/message.type";
 import { Connection } from "../../channel/connection";
 import { debounceTime, tap } from "rxjs/operators";
 import { COLORS, UPDATE_DEBOUNCE_TIME } from "@core/constants";
 import { Subject } from "rxjs";
 import * as d3 from 'd3';
-import { SerializedTreeViewItem } from "./tree-diagram/tree-diagram.component";
 import { ViewService } from "../../core/view.service";
 
 @Component({
@@ -17,37 +16,19 @@ export class ComponentTreeComponent implements OnInit {
   drawingPool: Subject<string> = new Subject();
   nodeMap = new Map();
 
-  constructor(private connection: Connection, public viewService: ViewService, private zone: NgZone) { }
+  constructor(private connection: Connection, public viewService: ViewService) { }
 
   ngOnInit() {
-    // TODO: clean this shit
-    this.connection.bgConnection.onMessage.addListener((message: Message<SerializedTreeViewItem | string>) => {
-      if (message.method === MessageMethod.Request) {
-        if (message.type === MessageType.TOGGLE_PROFILING) {
-          if (message.content) {
-            this.connection.bgConnection.postMessage({
-              type: MessageType.COMPONENT_TREE,
-              method: MessageMethod.Request,
-            });
-          } else {
-            this.viewService.updateTreeView(null);
-          }
+    this.viewService.updatedTreeId
+      .subscribe(id => {
+        if (this.nodeMap.has(id)) {
+          const previous = this.nodeMap.get(id);
+          this.nodeMap.set(id, {rect: previous.rect, link: previous.link, time: previous.time + 1});
+        } else {
+          this.nodeMap.set(id, {rect: d3.select(`#r${id}`), link: d3.select(`#l${id}`), time: 1});
         }
-      } else {
-        if (message.type === MessageType.COMPONENT_TREE) {
-          this.viewService.updateTreeView(<SerializedTreeViewItem>message.content);
-        } else if (message.type === MessageType.UPDATE_TREE) {
-          const id = <string>message.content;
-          if (this.nodeMap.has(id)) {
-            const previous = this.nodeMap.get(id);
-            this.nodeMap.set(id, {rect: previous.rect, link: previous.link, time: previous.time + 1});
-          } else {
-            this.nodeMap.set(id, {rect: d3.select(`#r${id}`), link: d3.select(`#l${id}`), time: 1});
-          }
-          this.drawingPool.next(id);
-        }
-      }
-    });
+        this.drawingPool.next(id);
+      })
     this.drawingPool.pipe(
       tap(this.updateRect),
       debounceTime(UPDATE_DEBOUNCE_TIME),

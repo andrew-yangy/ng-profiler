@@ -9,6 +9,8 @@ import { SerializedTreeViewItem } from "../containers/component-tree/tree-diagra
 export class ViewService {
   private selectedNode$ = new BehaviorSubject(null);
   private componentTreeView$ = new BehaviorSubject<SerializedTreeViewItem>(null);
+  private updatedTreeId$ = new BehaviorSubject(null);
+
   constructor() { }
 
   get selectedNode() {
@@ -23,11 +25,19 @@ export class ViewService {
     return this.selectedNode.pipe(filter(Boolean), pluck('data'))
   }
 
+  get updatedTreeId() {
+    return this.updatedTreeId$.asObservable();
+  }
+
   selectNode(node) {
     this.selectedNode$.next(node);
   }
 
   updateTreeView(treeView: SerializedTreeViewItem) {
     this.componentTreeView$.next(treeView);
+  }
+
+  updateTreeId(id: string) {
+    this.updatedTreeId$.next(id);
   }
 }

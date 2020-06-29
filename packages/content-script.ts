@@ -53,9 +53,6 @@ observeResponse<string>(MessageType.UPDATE_TREE).pipe(filter(id => !!id)).subscr
   chrome.runtime.sendMessage(createMessage<string>(MessageType.UPDATE_TREE, MessageMethod.Response, componentId))
 });
 
-observeResponse<SerializedTreeViewItem>(MessageType.COMPONENT_TREE).subscribe(tree => {
-  chrome.runtime.sendMessage(createMessage<SerializedTreeViewItem>(MessageType.COMPONENT_TREE, MessageMethod.Response, tree))
-});
 observeResponse<ViewProfile>(MessageType.VIEW_PROFILES).subscribe(profiles => {
   chrome.runtime.sendMessage(createMessage<ViewProfile>(MessageType.VIEW_PROFILES, MessageMethod.Response, profiles))
 });
