@@ -17,17 +17,26 @@ export function findLView(target: HTMLElement | ChildNode | Node): LView|null {
   if (!target || !target.childNodes) {
     return;
   }
-  const childNodes = target.childNodes;
-  for (let i = 0; i < childNodes.length; i++) {
-    const childNode = childNodes[i];
-    let mpValue = readPatchedLView(childNode);
-    if (mpValue) {
-      return mpValue;
-    } else {
-      const mpValueChildren = findLView(childNode);
-      if (mpValueChildren) {
-        return mpValueChildren;
+
+  let queue: (HTMLElement | ChildNode)[];
+  queue.push(target);
+
+  while (queue.length > 0) {
+    const currentNode = queue.shift();
+    if (currentNode != target) {
+      let mpValue = readPatchedLView(currentNode);
+      if (mpValue) {
+        return mpValue;
+      }
+    }
+
+    if (!!currentNode.childNodes && currentNode.childNodes.length > 0) {
+      const childNodes = currentNode.childNodes;
+      for (let i = 0; i < childNodes.length; i++) {
+        queue.push(childNodes[i]);
       }
     }
   }
+
+  return null;
 }
